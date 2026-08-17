@@ -70,17 +70,39 @@ The fix: RAW writers take the source block whole; a new `MAP_Spine`, `MAP_Multip
 
 ## Verification habits that have caught real bugs
 
-- **Reconcile the supplied multipliers against the supplied Table 5.** Derive the simple output multiplier from the flow table and compare. Australia, NSW and SA all matched to within 0.001 across 114 industries; against Table 8 they do not match at all. `scripts/check_sources.py` does this. Run it on every new data drop.
+- **Reconcile the supplied multipliers against the supplied Table 5.** Derive the simple output multiplier from the flow table and compare. On the V2 drop all nine regions match 114/114 within 0.001; against Table 8 they do not match at all. `scripts/check_sources.py` does this. Run it on every new data drop. Two things it must get right, both of which have already produced a `nan`: index off the block's own position (`verbatim[0]` **is** source row 13, so a src_row is not an index), and take the denominator from the `Production` row rather than `T1`.
+- **Empty string is not a mismatch.** `openpyxl` writes `''` back as an empty cell, which made a verbatim round-trip report 1,244 phantom differences. Collapse `None` and `''` before comparing — but only those. A `0`, a `'0'` or an `'n.a.'` is real content.
 - **Test region distinctness.** In the master model, six of eight state flow-table blocks were byte-identical to NSW, and five of eight multiplier sets were byte-identical to Australia. Nothing in the workbook would have revealed that.
-- **State multipliers must be strictly smaller than national.** Smaller economies leak more.
+- **State multipliers must be strictly smaller than national.** Smaller economies leak more. Enforced as a warning that names the offending industries, not a hard fail: a wholesale regionalisation failure shows up as *most* industries above national or as an identical block, and the distinctness and reconciliation gates already catch those. A named handful is a question for the provider.
 - **Watch int vs float when reading results back.** Twice now a verification script has reported a false discrepancy because `isinstance(x, float)` skipped values Excel stored as integers. Use `numbers.Number`.
 - **Check operator precedence in generated formulas.** `=IFERROR(A-B-C/D,"")` divides only `C`. Wrap numerators in parentheses.
 
+## The supplied data as loaded (V2 drop)
+
+`data/supplied/Piggy IO tables and multipliers_V2.xlsx`, 27 data sheets: Table 5, Table 8 and a multiplier summary for each of Aus, NSW, Vic, Qld, SA, WA, Tas, NT, ACT. Loaded by `scripts/load_sources.py`, stacked into `output/IO_RAW_Stacked.xlsx` by `scripts/build_raw_stacked.py`, proven verbatim by `scripts/verify_stacked.py` (574,857 cells, 0 mismatches).
+
+- **Vintage is 2022-23**, not the 2021-22 of the old master. Every sheet says `$m 2022-23`.
+- **Every sheet shares one grid**, which is what makes stacking safe: r10 column codes, r11 region name in col B, r13 first data row, col A code, col B label, col C+ matrix. Rows 13-136 are 114 real codes plus 10 `Dummy` rows (9901-9910).
+- **Table 5 and Table 8 disagree on primary-input positions.** T5: r148 `P6`, r150 Production, r152 GDP. T8: r148 `P5`, r150 Production, r151 `P6`, r153 Total uses. Never address a P-row by row number — `SUMIF` on `RowType`.
+- **Both national and state blocks now use P3a/P3b/P3c/P3d and P4a/P4b.** The old note that only state blocks split them no longer holds for this vintage.
+- **The multiplier set has 15 measure blocks of 11 effects**, 12 columns apart from col C. Three are the GVA definitions: `Value added at factor cost`, `Value added` and `Value added at market prices`. **`Value added` is the basic-prices block and the headline.** Do not reach for the market-prices one.
+- **Employment is FTE** — `Employment (FTE)`, col EH of each *state* Table 5. There is no employment column on Aus Table 5.
+- 996 `n.a.` text cells per region (1,140 for ACT). Kept as text in RAW.
+- All nine regions verified distinct across T5, T8 and multipliers — no repeat of the master model's copies.
+- Reconciliation passes 114/114 within 0.001 in **all nine** regions, max deviation 0.0000.
+
+### Questions outstanding with the provider
+
+- **`Aus Table 5` cell A1 reads "Overrides are ON."** No other sheet carries it. Unknown what it overrides.
+- **1701 Petroleum and Coal Product Manufacturing has a state multiplier above national** in QLD (+0.121), SA (+0.047) and WA (+0.102). Two further trivial cases in NSW (0801 +0.0009, 1001 +0.0127). Five of 912 comparisons; everything else obeys the rule.
+- **`NT Table 5` carries extra rows 157-165** (`P1_Labour`, `P2_GOS` … `P6_Imports`) that no other sheet has. Preserved verbatim; look like working notes.
+- The file's Table of Contents lists sheets that are not in it (per-measure multiplier tabs, and Corowa/Kingaroy/MB, which were deliberately removed). The ToC is stale.
+
 ## Open items
 
-1. Load the complete nine-region multiplier set and Table 5 / Table 8 set.
-2. Decide the vintage. The multipliers are labelled 2021-22; the ABS margin and tax tables are 2023-24. Mixed vintages are currently flagged, not resolved.
-3. Rebuild the RAW layer verbatim with a `MAP_` layer, per the four fixes above.
+1. ~~Load the complete nine-region multiplier set and Table 5 / Table 8 set.~~ **Done** — V2 drop, all nine regions, verified.
+2. Decide the vintage. Supplied data is now **2022-23**; the ABS margin and tax tables are 2023-24. Still mixed, still one year apart, still flagged rather than resolved.
+3. Rebuild the RAW layer verbatim with a `MAP_` layer, per the four fixes above. **RAW is done and verbatim** (`RAW_T5`, `RAW_T8`, `RAW_Multipliers`, stacked and region-keyed). The `MAP_` layer and the rest of the chain are not yet rebuilt against it.
 4. Fix the exports column: Table 5 and Table 8 treat re-exports differently, so `T8-T5` gives a zero import share for Q7.
-5. Confirm whether the supplied `Employed` block is persons or FTE, and its price year.
+5. ~~Confirm whether the supplied `Employed` block is persons or FTE.~~ **FTE**, per the state Table 5 column heading. Price year still to confirm, and Australia has no employment column at all.
 6. Ask the provider for a `6700` row.

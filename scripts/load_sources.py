@@ -122,29 +122,122 @@ def load_all_abs():
 
 
 # ------------------------------------------------------- supplied data loaders
+#
+# Layout of "Piggy IO tables and multipliers_V2.xlsx", established by inspection.
+# Every sheet in the file shares one grid, which is what makes the stacking safe:
+#
+#   r3   'Table 5' / 'Table 8'          r10  column IOIG codes
+#   r4   '$m 2022-23'  <- the vintage   r11  region name in col B, column names
+#   r12  'FROM INDUSTRY'                r13  first data row
+#
+#   col A  IOIG code        col B  industry name        col C..  the matrix
+#
+# Rows 13-136 are 114 real codes plus 10 'Dummy' rows (9901-9910). Then the
+# primary inputs. Table 5 and Table 8 do NOT agree on where those sit:
+#
+#   Table 5:  r138 T1, r140-147 P1 P2 P3a P3c P3d P3b P4a P4b, r148 P6,
+#             r150 Production, r152 GDP
+#   Table 8:  r138 T1, r140-147 same, r148 P5, r150 Production, r151 P6,
+#             r153 Total uses
+#
+# That disagreement is exactly why the stacked tabs carry a RowType column and
+# the model sums primary inputs with SUMIF on it rather than by row number.
+SUPPLIED_FILE = 'Piggy IO tables and multipliers_V2.xlsx'
+
+# Sheet-name prefix per region, in the file's own order.
+SHEET_REGION = {'Aus': 'Aus', 'NSW': 'NSW', 'Vic': 'Vic', 'QLD': 'Qld', 'SA': 'SA',
+                'WA': 'WA', 'Tas': 'Tas', 'NT': 'NT', 'ACT': 'ACT'}
+
+FIRST_DATA_ROW = 13
+# Last row holding content, taken as the max across all nine regions so that no
+# region's block is truncated. NT Table 5 runs to 165 where the others stop at
+# 153; Table 8 runs to 158. Short blocks simply leave trailing rows empty.
+BLOCK_BOUNDS = {          # (last_row, last_col)
+    'T5':   (165, 141),
+    'T8':   (158, 136),
+    'MULT': (136, 181),
+}
+
+
+def classify_row(code, label):
+    """
+    RowType for a source row. This is the key the workbook's SUMIF uses to total
+    primary inputs, so it must not depend on row position - see the T5/T8
+    disagreement above.
+    """
+    c = (str(code).strip() if code is not None else '')
+    l = (str(label).strip() if label is not None else '')
+    if norm_code(c):
+        return 'Dummy' if c.zfill(4).startswith('99') else 'Industry'
+    if c == 'T1':
+        return 'Total'
+    if re.match(r'^P\d', c):
+        return 'Primary'
+    if 'Production' in l:
+        return 'Production'
+    if c.startswith('GDP') or c.startswith('GSP') or 'Gross Domestic Product' in l \
+            or 'Gross State Product' in l:
+        return 'Product'
+    if 'Total uses' in l:
+        return 'Total'
+    return 'Other' if (c or l) else ''
+
+
+def load_supplied_block(ws, kind):
+    """
+    One region's block, exactly as it appears. Values are never dropped, padded,
+    re-ordered or coerced - the only thing added is an index so the MAP layer can
+    find things without anyone editing the block.
+    """
+    last_row, last_col = BLOCK_BOUNDS[kind]
+    verbatim, meta = [], []
+    for ri in range(FIRST_DATA_ROW, last_row + 1):
+        row = [ws.cell(row=ri, column=ci).value for ci in range(1, last_col + 1)]
+        verbatim.append(row)
+        code, label = row[0], (row[1] if len(row) > 1 else None)
+        meta.append({'src_row': ri, 'code': norm_code(code),
+                     'raw_code': ('' if code is None else str(code).strip()),
+                     'label': ('' if label is None else str(label).strip()),
+                     'row_type': classify_row(code, label)})
+    header = [[ws.cell(row=ri, column=ci).value for ci in range(1, last_col + 1)]
+              for ri in (10, 11)]
+    row_index = {}
+    for m in meta:
+        if m['code']:
+            row_index.setdefault(m['code'], m['src_row'])
+    return {'verbatim': verbatim, 'meta': meta, 'header': header,
+            'row_index': row_index, 'code_col': 1, 'first_data_col': 3,
+            'vintage': str(ws.cell(row=4, column=2).value or '').strip(),
+            'region_label': str(ws.cell(row=11, column=2).value or '').strip()}
+
+
 def load_supplied_flows():
-    """
-    Table 5 and Table 8 for all nine regions, as supplied.
-
-    TODO ADAPT ME. Run scripts/inspect_inputs.py first, then fill this in.
-
-    Return {('T5'|'T8', region): {'verbatim': rows, 'code_col': int,
-                                  'row_index': {code: row}, 'source': str}}
-
-    Watch for:
-      - region blocks stacked in one sheet, keyed by a label column, versus one
-        sheet or one file per region
-      - primary-input rows named P3a/P3b/P3c/P3d and P4a/P4b in state blocks but
-        P3/P4 nationally. Keep whatever is there; check_sources.py sums the
-        P-rows dynamically
-      - a 114-code spine with no 6700. Do NOT pad it here. The MAP layer bridges
-    """
+    """Table 5 and Table 8 for all nine regions, as supplied."""
     out = {}
-    files = sorted(SUP_DIR.glob('*.xls*'))
-    if not files:
-        print("  ! nothing in data/supplied/")
-        return out
-    print("  ! load_supplied_flows() is a stub - adapt it to your files, then rerun")
+    path = SUP_DIR / SUPPLIED_FILE
+    if not path.exists():
+        cand = sorted(SUP_DIR.glob('*.xls*'))
+        if not cand:
+            print("  ! nothing in data/supplied/")
+            return out
+        path = cand[0]
+        print(f"  ! {SUPPLIED_FILE} not found, using {path.name}")
+    wb = openpyxl.load_workbook(path, read_only=False, data_only=True)
+    for region, prefix in SHEET_REGION.items():
+        for kind, tag in (('T5', 'Table 5'), ('T8', 'Table 8')):
+            sheet = f'{prefix} {tag} FY23'
+            if sheet not in wb.sheetnames:
+                print(f"  ! missing sheet {sheet!r} - {region} {kind} left empty")
+                continue
+            d = load_supplied_block(wb[sheet], kind)
+            d['source'] = f'{path.name} :: {sheet}'
+            out[(kind, region)] = d
+        got = [k for k in ('T5', 'T8') if (k, region) in out]
+        if got:
+            n = len([m for m in out[(got[0], region)]['meta'] if m['row_type'] == 'Industry'])
+            print(f"  {region:4s} {'+'.join(got):6s} {n} industry codes, "
+                  f"vintage {out[(got[0], region)]['vintage']!r}")
+    wb.close()
     return out
 
 
@@ -152,21 +245,55 @@ def load_supplied_multipliers():
     """
     The multiplier set for all nine regions, as supplied.
 
-    TODO ADAPT ME.
+    15 measure blocks of 11 effects, 12 columns apart (11 effects + 1 spacer),
+    starting at column C. 'n.a.' cells are kept AS TEXT - the MAP layer decides
+    what they mean, RAW does not.
 
-    Return {'blocks': [measure names], 'effects': [11 effect names],
-            'data': {'REGION|CODE': [values in block-major order]},
-            'verbatim': rows, 'source': str}
-
-    Watch for:
-      - 'n.a.' text cells. KEEP THEM AS TEXT. The MAP layer converts, RAW does not
-      - measure blocks spaced 12 columns apart with 11 effect columns and a spacer
-      - the 11 effects, in order: Initial, First round, Simple, Industrial support,
-        Production-induced, Type 1A, Type 1B, Total, Consumption-induced,
-        Type 2A, Type 2B
+    Three of the fifteen blocks are the three GVA definitions. 'Value added
+    multipliers' is the basic-prices one and the ABS headline; do not reach for
+    the market-prices block, which includes taxes on products (P3).
     """
-    print("  ! load_supplied_multipliers() is a stub - adapt it to your files, then rerun")
-    return {}
+    out = {}
+    path = SUP_DIR / SUPPLIED_FILE
+    if not path.exists():
+        cand = sorted(SUP_DIR.glob('*.xls*'))
+        if not cand:
+            return out
+        path = cand[0]
+    wb = openpyxl.load_workbook(path, read_only=False, data_only=True)
+    blocks, effects, per_region = [], [], {}
+    for region, prefix in SHEET_REGION.items():
+        sheet = f'{prefix} multiplier summary FY23'
+        if sheet not in wb.sheetnames:
+            print(f"  ! missing sheet {sheet!r} - {region} multipliers left empty")
+            continue
+        ws = wb[sheet]
+        d = load_supplied_block(ws, 'MULT')
+        d['source'] = f'{path.name} :: {sheet}'
+        per_region[region] = d
+        if not blocks:      # block and effect names are identical across regions
+            for ci in range(1, BLOCK_BOUNDS['MULT'][1] + 1):
+                v = ws.cell(row=10, column=ci).value
+                if v not in (None, ''):
+                    blocks.append({'name': str(v).strip(), 'first_col': ci})
+            first = blocks[0]['first_col']
+            for ci in range(first, first + 11):
+                effects.append(str(ws.cell(row=11, column=ci).value or '').strip())
+        na = sum(1 for r in d['verbatim'] for v in r
+                 if isinstance(v, str) and v.strip().lower() == 'n.a.')
+        print(f"  {region:4s} {len(d['row_index'])} codes, {na} 'n.a.' cells kept as text")
+    wb.close()
+    if not per_region:
+        return out
+    # flat lookup for check_sources.py: REGION|CODE -> the 11 effects of block 1
+    data = {}
+    for region, d in per_region.items():
+        first = blocks[0]['first_col']
+        for m, row in zip(d['meta'], d['verbatim']):
+            if m['code']:
+                data[f"{region}|{m['code']}"] = list(row[first - 1:first + 10])
+    return {'blocks': blocks, 'effects': effects, 'regions': per_region,
+            'data': data, 'source': str(path.name)}
 
 
 def main():
@@ -182,7 +309,8 @@ def main():
                'regions': REGIONS, 'margin_tables': MARGIN_TABLES,
                'margin_control': MARGIN_CONTROL,
                'margin_total_spine': MARGIN_TOTAL_SPINE,
-               'net_tax_total_spine': NET_TAX_TOTAL_SPINE}
+               'net_tax_total_spine': NET_TAX_TOTAL_SPINE,
+               'block_bounds': BLOCK_BOUNDS, 'first_data_row': FIRST_DATA_ROW}
     with open(OUT, 'wb') as f:
         pickle.dump(sources, f)
     print(f"\nwrote {OUT}")
