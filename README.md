@@ -22,6 +22,8 @@ non-negotiable rules and domain facts, and
 │   ├── inspect_inputs.py           Report the shape of every file in data/
 │   ├── load_sources.py             data/ ─▶ build/sources.pkl (verbatim)
 │   ├── check_sources.py            Integrity gates on build/sources.pkl
+│   ├── build_raw_stacked.py        build/sources.pkl ─▶ stacked RAW workbook
+│   ├── verify_stacked.py           Prove the stacked tabs are verbatim
 │   └── build_model.py              build/sources.pkl ─▶ output/ workbook
 │
 ├── data/                         Source files only — never edited (rule 1)
@@ -60,8 +62,23 @@ Run from the repository root, in order:
 python scripts/inspect_inputs.py     # report the shape of everything under data/
 python scripts/load_sources.py       # data/ ─▶ build/sources.pkl (verbatim)
 python scripts/check_sources.py      # integrity gates — do not build on a failure
+python scripts/build_raw_stacked.py  # ─▶ output/IO_RAW_Stacked.xlsx
+python scripts/verify_stacked.py     # prove it is verbatim, cell for cell
 python scripts/build_model.py        # build/sources.pkl ─▶ output/ workbook
 ```
+
+### The stacked RAW layer
+
+`RAW_T5`, `RAW_T8` and `RAW_Multipliers` each hold all nine regions stacked, with
+four key columns (`Region`, `Code`, `RowType`, `SrcRow`) to the left of the source
+block. The keys sit outside the pasted rectangle, so re-pasting a region cannot
+disturb them. Lookups are `INDEX`/`MATCH` on Region + Code, which is what lets the
+region switch avoid the banned `INDIRECT` and a nine-deep nested `IF`. `RowType`
+is what makes the output denominator a `SUMIF` over primary-input rows rather than
+a hardcoded row range — Table 5 and Table 8 do not agree on where those rows sit.
+
+The `INDEX` tab of the generated workbook lists the exact row band for every
+region, and the paste procedure for a new vintage.
 
 `load_sources.py` reads `data/abs/` and `data/supplied/` and writes a verbatim
 cache to `build/sources.pkl`; the RAW tabs are written from that cache unchanged.

@@ -9,6 +9,7 @@ These are the checks that have actually caught things:
 
     python scripts/check_sources.py
 """
+import numbers
 import pickle
 import re
 import sys
@@ -30,6 +31,13 @@ def norm_code(v):
     if s.endswith('.0'):
         s = s[:-2]
     return s.zfill(4) if CODE_RE.match(s) else None
+
+
+def _num(v):
+    """Numeric value or nan. Uses numbers.Number so ints Excel stored as ints
+    are not silently skipped - that has caused false discrepancies twice."""
+    import math
+    return float(v) if isinstance(v, numbers.Number) else math.nan
 
 
 PASS, FAIL, WARN = 'PASS', 'FAIL', 'WARN'
@@ -83,6 +91,60 @@ def check_abs(src):
                f"{n} four-digit codes in column {t['code_col']}")
 
 
+def industry_block(d):
+    """
+    The real industry quadrant and the output vector, from a loaded flow block.
+
+    Two things this must get right, both of which have bitten before:
+
+      * Position. 'meta' carries src_row for audit, which is NOT an index into
+        'verbatim' - verbatim[0] IS src_row 13. Index off meta's own position.
+      * Order. The columns run in the source's own spine order, so the rows must
+        too. Sorting the codes here would silently transpose the matrix against
+        its own column headings.
+
+    The 10 'Dummy' rows (9901-9910) and their matching columns are excluded from
+    the algebra but left untouched in RAW.
+
+    Output x is the source's own Production row, which is intermediate use plus
+    every primary input. Using the T1 row alone understates output and inflates
+    every derived multiplier - see CLAUDE.md.
+    """
+    ind = [(i, m['code']) for i, m in enumerate(d['meta']) if m['row_type'] == 'Industry']
+    codes = [c for _, c in ind]
+    n = len(codes)
+    first = d.get('first_data_col', 3)
+    Z = np.full((n, n), np.nan)
+    for r, (vi, _) in enumerate(ind):
+        row = d['verbatim'][vi]
+        for c in range(n):
+            ci = first - 1 + c
+            v = row[ci] if ci < len(row) else None
+            if isinstance(v, numbers.Number):
+                Z[r, c] = float(v)
+    prod = [i for i, m in enumerate(d['meta']) if m['row_type'] == 'Production']
+    x = np.full(n, np.nan)
+    if prod:
+        row = d['verbatim'][prod[0]]
+        for c in range(n):
+            ci = first - 1 + c
+            v = row[ci] if ci < len(row) else None
+            if isinstance(v, numbers.Number):
+                x[c] = float(v)
+    else:                                   # fall back to T1 + every P row
+        want = ('Total', 'Primary')
+        x = np.zeros(n)
+        for i, m in enumerate(d['meta']):
+            if m['row_type'] in want:
+                row = d['verbatim'][i]
+                for c in range(n):
+                    ci = first - 1 + c
+                    v = row[ci] if ci < len(row) else None
+                    if isinstance(v, numbers.Number):
+                        x[c] += float(v)
+    return codes, Z, x
+
+
 def check_flow_tables(src):
     flows = src.get('flows') or {}
     if not flows:
@@ -94,15 +156,11 @@ def check_flow_tables(src):
     report('Flow tables for all nine regions', PASS if not missing else FAIL,
            '' if not missing else f"missing: {missing}")
 
-    # region distinctness on Table 5
     blocks = {}
     for (tbl, reg), d in flows.items():
-        if tbl != 'T5':
-            continue
-        codes = sorted(c for c in d['row_index'] if norm_code(c))
-        first_col = d.get('first_data_col', (d['code_col'] or 0) + 2)
-        blocks[reg] = (codes, numeric_block(d['verbatim'], d['row_index'], codes,
-                                            first_col, len(codes)))
+        if tbl == 'T5':
+            codes, Z, x = industry_block(d)
+            blocks[reg] = (codes, Z, x)
     dupes = []
     regs = sorted(blocks)
     for i, a in enumerate(regs):
@@ -112,6 +170,18 @@ def check_flow_tables(src):
                 dupes.append((a, b))
     report('Every region has a distinct Table 5', PASS if not dupes else FAIL,
            '' if not dupes else f"identical pairs: {dupes}")
+
+    # Table 8 must exceed Table 5 everywhere: imports are embedded in T8.
+    bad = []
+    for reg in src['regions']:
+        if ('T5', reg) in flows and ('T8', reg) in flows:
+            _, Z5, _ = industry_block(flows[('T5', reg)])
+            _, Z8, _ = industry_block(flows[('T8', reg)])
+            diff = np.nan_to_num(Z8) - np.nan_to_num(Z5)
+            if diff.sum() <= 0 or (diff < -1e-6).sum() > 0:
+                bad.append(f"{reg} ({int((diff < -1e-6).sum())} negative cells)")
+    report('Imports (T8 less T5) non-negative in every region',
+           PASS if not bad else WARN, '; '.join(bad))
     return blocks
 
 
@@ -154,27 +224,54 @@ def check_multipliers(src, flow_blocks):
     report('Identity: simple = initial + production induced',
            PASS if worst < 1e-4 else FAIL, f"max deviation {worst:.6f}")
 
-    # reconciliation against the flow tables
+    # ---------------------------------------------------------- reconciliation
+    # The check that proves the supplied multipliers and the supplied Table 5
+    # are the same body of work. Derive the simple output multiplier from the
+    # flow table and compare it to the set. Against Table 8 it will not match.
     if not flow_blocks:
         return
-    for reg, (codes, Z) in flow_blocks.items():
-        x = Z.sum(0)  # TODO replace with intermediate use + ALL primary input rows
+    for reg in [r for r in src['regions'] if r in flow_blocks]:
+        codes, Z, x = flow_blocks[reg]
         try:
-            derived = simple_output_multiplier(np.nan_to_num(Z), x)
+            derived = simple_output_multiplier(np.nan_to_num(Z), np.nan_to_num(x))
         except np.linalg.LinAlgError:
             report(f"{reg}: multipliers reconcile to Table 5", WARN, 'matrix not invertible')
             continue
-        supplied = np.array([(data.get(f"{reg}|{c}") or [np.nan] * 11)[i_simp] for c in codes],
-                            dtype=float)
-        ok = ~np.isnan(supplied)
+        supplied = np.array([_num((data.get(f"{reg}|{c}") or [None] * 11)[i_simp])
+                             for c in codes], dtype=float)
+        ok = ~np.isnan(supplied) & ~np.isnan(derived)
         if ok.sum() == 0:
+            report(f"{reg}: multipliers reconcile to Table 5", WARN, 'no comparable rows')
             continue
-        d = np.abs(derived[ok] - supplied[ok])
-        near = int((d < 0.001).sum())
+        dev = np.abs(derived[ok] - supplied[ok])
+        near = int((dev < 0.001).sum())
         report(f"{reg}: multipliers reconcile to Table 5",
                PASS if near == ok.sum() else WARN,
-               f"{near}/{int(ok.sum())} within 0.001, max deviation {d.max():.4f}. "
-               f"If this fails, check the output denominator includes every P-row.")
+               f"{near}/{int(ok.sum())} within 0.001, max deviation {dev.max():.4f}")
+
+    # State multipliers must be strictly smaller than national - smaller
+    # economies leak more. A state at or above national means the
+    # regionalisation failed, or the block is a copy of Australia.
+    # A wholesale failure shows up as most industries above national, or as a
+    # block identical to Australia - both of which the checks above already
+    # catch. A handful of named industries is a question for the provider, not
+    # a reason to block the build, so this warns and names them.
+    if 'Aus' in flow_blocks:
+        codes_aus = flow_blocks['Aus'][0]
+        nat = {c: _num((data.get(f"Aus|{c}") or [None] * 11)[i_simp]) for c in codes_aus}
+        labels = {m['code']: m['label']
+                  for m in (mult.get('regions', {}).get('Aus', {}) or {}).get('meta', [])
+                  if m.get('code')}
+        for reg in [r for r in src['regions'] if r != 'Aus' and r in flow_blocks]:
+            over = []
+            for c in flow_blocks[reg][0]:
+                s, a = _num((data.get(f"{reg}|{c}") or [None] * 11)[i_simp]), nat.get(c, np.nan)
+                if not np.isnan(s) and not np.isnan(a) and s > a + 1e-9:
+                    over.append(f"{c} {labels.get(c, '')[:34]} ({s:.4f} vs {a:.4f})")
+            n = len(flow_blocks[reg][0])
+            report(f"{reg}: simple multipliers below national",
+                   PASS if not over else WARN,
+                   '' if not over else f"{len(over)}/{n} above Australia: " + '; '.join(over))
 
 
 def main():
