@@ -1,0 +1,19 @@
+# Derived cache built from data/ by scripts/load_sources.py.
+# Regenerate any time; never the source of truth.
+/build/*
+!/build/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*~
+.ipynb_checkpoints/
+
+# Stray browser downloads (a file literally named "download")
+/download
