@@ -87,16 +87,84 @@ def spine_index(rows, code_col):
 
 
 # ---------------------------------------------------------------- ABS loaders
-def load_abs_table(path, sheet=None):
-    """Load an ABS data cube verbatim. Works for Tables 5, 8 and 23-35."""
+#
+# Layout of the ABS margin and tax cubes (Tables 23-35), 2023-24 release.
+# All thirteen share one grid, which is what lets them stack:
+#
+#   r1   col C+  column IOIG codes        col A  row code, stored as a NUMBER
+#   r2   col B   table title              col B  product name
+#   r3   col A   'Supply'                 col C+ the matrix
+#   r4-118   the full 115-code spine
+#   r119     Re-exports          <- kept; it is why the published total is
+#   r121     Total                  422,034 against 421,410 on the spine
+#
+#   col C..DN (3-117)  the 115 industry columns
+#   col DN    (118)    Total Industry Uses
+#   col DO-DU (119-125) Q1..Q7
+#   col DV    (126)    Final Uses (Q1 to Q7)
+#   col DW    (127)    Total Supply
+#
+# The row codes are stored as numbers, so 0101 arrives as 101. norm_code zfills
+# them - that is exactly the leading-zero trap CLAUDE.md warns about.
+ABS_FIRST_ROW = 4
+ABS_LAST_ROW = 121          # through the Total row
+ABS_LAST_COL = 127          # through Total Supply
+
+
+def classify_abs_row(code, label):
+    if norm_code(code):
+        return 'Product'
+    l = (str(label).strip() if label is not None else '')
+    if l.lower().startswith('re-export'):
+        return 'ReExports'
+    if l.lower().startswith('total'):
+        return 'Total'
+    return 'Other' if l else ''
+
+
+def load_abs_table(path, sheet=None, first_row=None, last_row=None, last_col=None):
+    """
+    Load an ABS margin or tax cube verbatim, in the same block shape as the
+    supplied flow tables so the stacked writer can treat them identically.
+
+    Nothing is dropped: the Re-exports row, the Total row and all three Total
+    columns survive. Trimming them is one of the defects this rebuild fixes.
+    """
+    first_row = ABS_FIRST_ROW if first_row is None else first_row
+    last_row = ABS_LAST_ROW if last_row is None else last_row
+    last_col = ABS_LAST_COL if last_col is None else last_col
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    name = sheet or (wb.sheetnames[1] if len(wb.sheetnames) > 1 else wb.sheetnames[0])
-    rows = grid(wb[name])
+    name = sheet or next((s for s in wb.sheetnames if s.lower().startswith('table')),
+                         wb.sheetnames[-1])
+    ws = wb[name]
+    # iter_rows, not ws.cell(): in read_only mode a per-cell access re-scans the
+    # sheet and turns a 2-second load into minutes.
+    allrows = [list(r) for r in ws.iter_rows(min_row=1, max_row=last_row,
+                                             max_col=last_col, values_only=True)]
+
+    def at(ri):
+        return allrows[ri - 1] if ri - 1 < len(allrows) else [None] * last_col
+
+    verbatim, meta = [], []
+    for ri in range(first_row, last_row + 1):
+        row = list(at(ri))
+        row += [None] * (last_col - len(row))
+        verbatim.append(row)
+        code, label = row[0], (row[1] if len(row) > 1 else None)
+        meta.append({'src_row': ri, 'code': norm_code(code),
+                     'raw_code': ('' if code is None else str(code).strip()),
+                     'label': ('' if label is None else str(label).strip()),
+                     'row_type': classify_abs_row(code, label)})
+    header = [list(at(ri)) + [None] * max(0, last_col - len(at(ri))) for ri in (1, 2)]
+    title = str(at(2)[1] or '').strip()
+    row_index = {}
+    for m in meta:
+        if m['code']:
+            row_index.setdefault(m['code'], m['src_row'])
     wb.close()
-    code_col = find_code_column(rows)
-    return {'verbatim': rows, 'sheet': name, 'code_col': code_col,
-            'row_index': spine_index(rows, code_col) if code_col else {},
-            'source': str(path.name)}
+    return {'verbatim': verbatim, 'meta': meta, 'header': header, 'sheet': name,
+            'code_col': 1, 'first_data_col': 3, 'row_index': row_index,
+            'title': title, 'source': str(path.name)}
 
 
 def load_all_abs():
@@ -115,7 +183,13 @@ def load_all_abs():
         if key is None:
             print(f"  ? could not identify {p.name} - name it like 520905500123.xlsx or 'Table 23.xlsx'")
             continue
-        got[key] = load_abs_table(p)
+        if key == 'T21':
+            # Table 21 is not a product-by-industry cube. It is the composition
+            # of supply by margin commodity, 11 earning industries deep, and it
+            # is the independent control total for the whole margin set.
+            got[key] = load_abs_table(p, first_row=2, last_row=14, last_col=5)
+        else:
+            got[key] = load_abs_table(p)
         print(f"  {key:5s} <- {p.name}  sheet '{got[key]['sheet']}'  "
               f"{len(got[key]['verbatim'])} rows, {len(got[key]['row_index'])} codes")
     return got
@@ -190,25 +264,31 @@ def load_supplied_block(ws, kind):
     find things without anyone editing the block.
     """
     last_row, last_col = BLOCK_BOUNDS[kind]
+    allrows = [list(r) for r in ws.iter_rows(min_row=1, max_row=last_row,
+                                             max_col=last_col, values_only=True)]
+
+    def at(ri):
+        r = list(allrows[ri - 1]) if ri - 1 < len(allrows) else []
+        return r + [None] * (last_col - len(r))
+
     verbatim, meta = [], []
     for ri in range(FIRST_DATA_ROW, last_row + 1):
-        row = [ws.cell(row=ri, column=ci).value for ci in range(1, last_col + 1)]
+        row = at(ri)
         verbatim.append(row)
         code, label = row[0], (row[1] if len(row) > 1 else None)
         meta.append({'src_row': ri, 'code': norm_code(code),
                      'raw_code': ('' if code is None else str(code).strip()),
                      'label': ('' if label is None else str(label).strip()),
                      'row_type': classify_row(code, label)})
-    header = [[ws.cell(row=ri, column=ci).value for ci in range(1, last_col + 1)]
-              for ri in (10, 11)]
+    header = [at(10), at(11)]
     row_index = {}
     for m in meta:
         if m['code']:
             row_index.setdefault(m['code'], m['src_row'])
     return {'verbatim': verbatim, 'meta': meta, 'header': header,
             'row_index': row_index, 'code_col': 1, 'first_data_col': 3,
-            'vintage': str(ws.cell(row=4, column=2).value or '').strip(),
-            'region_label': str(ws.cell(row=11, column=2).value or '').strip()}
+            'vintage': str(at(4)[1] or '').strip(),
+            'region_label': str(at(11)[1] or '').strip()}
 
 
 def load_supplied_flows():
@@ -222,7 +302,7 @@ def load_supplied_flows():
             return out
         path = cand[0]
         print(f"  ! {SUPPLIED_FILE} not found, using {path.name}")
-    wb = openpyxl.load_workbook(path, read_only=False, data_only=True)
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     for region, prefix in SHEET_REGION.items():
         for kind, tag in (('T5', 'Table 5'), ('T8', 'Table 8')):
             sheet = f'{prefix} {tag} FY23'
@@ -260,7 +340,7 @@ def load_supplied_multipliers():
         if not cand:
             return out
         path = cand[0]
-    wb = openpyxl.load_workbook(path, read_only=False, data_only=True)
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     blocks, effects, per_region = [], [], {}
     for region, prefix in SHEET_REGION.items():
         sheet = f'{prefix} multiplier summary FY23'

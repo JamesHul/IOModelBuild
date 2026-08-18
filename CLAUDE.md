@@ -77,6 +77,17 @@ The fix: RAW writers take the source block whole; a new `MAP_Spine`, `MAP_Multip
 - **Watch int vs float when reading results back.** Twice now a verification script has reported a false discrepancy because `isinstance(x, float)` skipped values Excel stored as integers. Use `numbers.Number`.
 - **Check operator precedence in generated formulas.** `=IFERROR(A-B-C/D,"")` divides only `C`. Wrap numerators in parentheses.
 
+## The ABS margin and tax data as loaded
+
+`data/abs/`, fourteen files, ABS 5209.0.55.001 **2023-24** release (25 March 2026). Tables 23-34 (margins), Table 35 (net taxes) and Table 21 (the control).
+
+- **All thirteen cubes share one grid**: r1 column codes from col C, r2 title in col B, r4-118 the full **115-code spine**, **r119 Re-exports**, r121 Total. Columns: C-DM the 115 industry columns, DN Total Industry Uses, DO-DU Q1-Q7, DV Final Uses, DW Total Supply.
+- **Row codes are stored as numbers**, so `0101` arrives as `101`. `norm_code` zfills them. This is the leading-zero trap, live in the real files.
+- **Every control total matches to the dollar**: the twelve margins individually, $421,410m on the spine, $422,034m including re-exports, net taxes $168,673m. Re-exports are $585m wholesale and $39m port handling, $624m in total.
+- **Table 21 is the independent cross-check** and agrees exactly. Its columns are A code, B name, **C Margin Commodity**, D Non margin, E Total — column E is roughly double and is not the comparable figure.
+- Table 21 also confirms the earning-industry map: 4801 = 2,512 = pipeline 2,392 + water 120; 5201 = 1,096 = port handling 1,057 + 39 re-exports.
+- **ABS Table 5 and Table 8 are not needed and are not loaded.** The flow tables come from the provider's regionalised set and imports are derived from it.
+
 ## The supplied data as loaded (V2 drop)
 
 `data/supplied/Piggy IO tables and multipliers_V2.xlsx`, 27 data sheets: Table 5, Table 8 and a multiplier summary for each of Aus, NSW, Vic, Qld, SA, WA, Tas, NT, ACT. Loaded by `scripts/load_sources.py`, stacked into `output/IO_RAW_Stacked.xlsx` by `scripts/build_raw_stacked.py`, proven verbatim by `scripts/verify_stacked.py` (574,857 cells, 0 mismatches).
@@ -102,7 +113,7 @@ The fix: RAW writers take the source block whole; a new `MAP_Spine`, `MAP_Multip
 
 1. ~~Load the complete nine-region multiplier set and Table 5 / Table 8 set.~~ **Done** — V2 drop, all nine regions, verified.
 2. Decide the vintage. Supplied data is now **2022-23**; the ABS margin and tax tables are 2023-24. Still mixed, still one year apart, still flagged rather than resolved.
-3. Rebuild the RAW layer verbatim with a `MAP_` layer, per the four fixes above. **RAW is done and verbatim** (`RAW_T5`, `RAW_T8`, `RAW_Multipliers`, stacked and region-keyed). The `MAP_` layer and the rest of the chain are not yet rebuilt against it.
+3. Rebuild the RAW layer verbatim with a `MAP_` layer, per the four fixes above. **RAW is done and verbatim** — `RAW_T5`, `RAW_T8`, `RAW_Multipliers` (region-keyed), `RAW_Margins` (keyed by `ABS_Table` and `Margin`) and `RAW_T21_Control`, with the margin-to-earner mapping in `Lists_MarginMap` rather than in RAW. 769,675 cells verified against source, 0 mismatches. The `MAP_` layer and the rest of the chain are not yet rebuilt against it.
 4. Fix the exports column: Table 5 and Table 8 treat re-exports differently, so `T8-T5` gives a zero import share for Q7.
 5. ~~Confirm whether the supplied `Employed` block is persons or FTE.~~ **FTE**, per the state Table 5 column heading. Price year still to confirm, and Australia has no employment column at all.
 6. Ask the provider for a `6700` row.

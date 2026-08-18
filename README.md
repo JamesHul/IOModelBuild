@@ -33,17 +33,21 @@ non-negotiable rules and domain facts, and
 │
 ├── build/                        Derived cache (build/sources.pkl) — gitignored
 └── output/                       Generated workbook(s)
-    └── IO_Impact_Model_v0-2.xlsx   The current built model
+    ├── IO_RAW_Stacked.xlsx         The stacked, verbatim RAW layer
+    └── IO_Impact_Model_v0-2.xlsx   The v0.2 model (pre-rebuild)
 ```
 
 ## Where to put files
 
 You upload source files into **`data/`**, and nothing else:
 
-- **`data/abs/`** — the ABS Input-Output tables (Table 5, Table 8, Tables 23–34
-  margins, Table 35 net taxes, and optionally the Industry and Product Concordance
-  workbook). Keep the ABS filenames (`520905500105.xlsx`, …) or rename to
-  `Table 5.xlsx` style so the loader can identify them.
+- **`data/abs/`** — the ABS margin and tax tables: **Tables 23–34** (margins),
+  **Table 35** (net taxes) and **Table 21** (the control total). Keep the ABS
+  filenames (`520905500123.xlsx`, …) or rename to `Table 23.xlsx` style so the
+  loader can identify them; a trailing ` (1)` from a repeat download is fine.
+  ABS Table 5 and Table 8 are **not** needed — the flow tables come from the
+  provider's regionalised set, and imports are derived as its T8 less its T5.
+  Optionally also the Industry and Product Concordance workbook.
 - **`data/supplied/`** — your provider's Table 5 / Table 8 and the multiplier set,
   for all nine regions.
 
@@ -77,14 +81,21 @@ region switch avoid the banned `INDIRECT` and a nine-deep nested `IF`. `RowType`
 is what makes the output denominator a `SUMIF` over primary-input rows rather than
 a hardcoded row range — Table 5 and Table 8 do not agree on where those rows sit.
 
+`RAW_Margins` stacks ABS Tables 23-34 and Table 35 the same way, keyed by
+`ABS_Table` and `Margin` instead of Region — the ABS publishes margin and tax
+matrices nationally only, so there is no region dimension to key on. The
+margin-to-earning-industry assignment is a transformation rather than identity,
+so it lives in `Lists_MarginMap`, joined on `ABS_Table`. `RAW_T21_Control` holds
+the independent control total.
+
 The `INDEX` tab of the generated workbook lists the exact row band for every
-region, and the paste procedure for a new vintage.
+block, and the paste procedure for a new vintage.
 
 `load_sources.py` reads `data/abs/` and `data/supplied/` and writes a verbatim
 cache to `build/sources.pkl`; the RAW tabs are written from that cache unchanged.
-The `load_supplied_flows()` and `load_supplied_multipliers()` loaders are stubs
-until the real provider files land — run `inspect_inputs.py` first and adapt them
-to the actual file layout, as the docstrings describe.
+It is the only file that knows the layout of the input spreadsheets, so when a
+new drop changes shape, that is the single place to fix. Run `inspect_inputs.py`
+first to see what actually arrived.
 
 After every build, recalculate the workbook and scan for error cells before
 declaring success — a build that has not been recalculated is not verified.

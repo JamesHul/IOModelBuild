@@ -64,84 +64,89 @@ BANDFILL = PatternFill('solid', fgColor='FFF2CC')
 THIN = Side(style='thin', color='BFBFBF')
 
 
-def write_stacked(wb, tabname, title, blocks, note):
+def write_stacked(wb, tabname, title, blocks, note, keydefs=None, hdr_src=(0, 1)):
     """
-    blocks: list of (region, loaded_block). Every region gets the same band
-    height so that a short block simply leaves trailing rows empty rather than
-    shifting the ones below it.
+    blocks:  list of (block_id, loaded_block). Every block gets the same band
+             height so a short one leaves trailing rows empty rather than
+             shifting the ones below it.
+    keydefs: list of (column header, fn(block_id, meta) -> value). Defaults to
+             the region key set used by the flow and multiplier tabs; the margin
+             tab passes ABS_Table and Margin instead.
     """
+    if keydefs is None:
+        keydefs = [('Region', lambda bid, m: bid),
+                   ('Code', lambda bid, m: m['code'] or m['raw_code']),
+                   ('RowType', lambda bid, m: m['row_type']),
+                   ('SrcRow', lambda bid, m: m['src_row'])]
+    nkey = len(keydefs)
     ws = wb.create_sheet(tabname)
     band = max(len(b['verbatim']) for _, b in blocks)
     width = max(len(r) for _, b in blocks for r in b['verbatim'])
 
     ws.cell(row=1, column=1, value=title).font = H1
-    for c in range(1, NKEY + width + 1):
+    for c in range(1, nkey + width + 1):
         ws.cell(row=1, column=c).fill = TITLEFILL
     src = blocks[0][1].get('source', '')
     ws.cell(row=2, column=1, value=(
         f"Source: {src.split(' :: ')[0]}   |   vintage {blocks[0][1].get('vintage', '')}"
-        f"   |   loaded {date.today():%Y-%m-%d}   |   {len(blocks)} regions"
+        f"   |   loaded {date.today():%Y-%m-%d}   |   {len(blocks)} blocks"
         f"   |   band height {band} rows")).font = NOTE
     ws.cell(row=3, column=1, value=note).font = NOTE
 
     hr = 4
-    for i, k in enumerate(KEYS, 1):
+    for i, (k, _) in enumerate(keydefs, 1):
         c = ws.cell(row=hr, column=i, value=k)
         c.font = H2
         c.fill = KEYFILL
         c.border = Border(bottom=THIN)
-    ws.cell(row=hr, column=NKEY + 1, value='── source block, verbatim ──▶').font = H2
+    ws.cell(row=hr, column=nkey + 1, value='── source block, verbatim ──▶').font = H2
     # the source's own header rows, written once
-    for j, hrow in enumerate(blocks[0][1]['header']):
+    for j, hi in enumerate(hdr_src):
+        hrow = blocks[0][1]['header'][hi]
         r = hr + 1 + j
         for ci, v in enumerate(hrow, 1):
-            cell = ws.cell(row=r, column=NKEY + ci, value=v)
+            cell = ws.cell(row=r, column=nkey + ci, value=v)
             cell.font = H2
             cell.fill = HDRFILL
             cell.alignment = Alignment(horizontal='center', wrap_text=False)
 
     bands = []
     row = FIRST_DATA_ROW
-    for region, b in blocks:
+    for bid, b in blocks:
         start = row
         for m, vals in zip(b['meta'], b['verbatim']):
-            k = ws.cell(row=row, column=1, value=region)
-            k.font = KEYFONT
-            k.fill = KEYFILL
-            code = ws.cell(row=row, column=2, value=(m['code'] or m['raw_code']))
-            code.number_format = '@'          # codes are TEXT, always
-            code.font = KEYFONT
-            code.fill = KEYFILL
-            rt = ws.cell(row=row, column=3, value=m['row_type'])
-            rt.font = KEYFONT
-            rt.fill = KEYFILL
-            sr = ws.cell(row=row, column=4, value=m['src_row'])
-            sr.font = KEYFONT
-            sr.fill = KEYFILL
+            for i, (name, fn) in enumerate(keydefs, 1):
+                c = ws.cell(row=row, column=i, value=fn(bid, m))
+                c.font = KEYFONT
+                c.fill = KEYFILL
+                if name == 'Code':
+                    c.number_format = '@'      # codes are TEXT, always
             for ci, v in enumerate(vals, 1):
-                cell = ws.cell(row=row, column=NKEY + ci, value=v)
+                cell = ws.cell(row=row, column=nkey + ci, value=v)
                 cell.font = BLUE
                 if ci == 1:
                     cell.number_format = '@'   # source code column stays text
             row += 1
         # pad short blocks so every band is the same height
         while row - start < band:
-            for i, v in enumerate([region, '', '', None], 1):
-                c = ws.cell(row=row, column=i, value=v)
+            for i, (name, fn) in enumerate(keydefs, 1):
+                c = ws.cell(row=row, column=i,
+                            value=(fn(bid, {'code': '', 'raw_code': '', 'row_type': '',
+                                            'src_row': None}) if name not in ('Code', 'RowType', 'SrcRow') else ''))
                 c.font = KEYFONT
                 c.fill = KEYFILL
             row += 1
-        bands.append((region, start, row - 1, b.get('source', '')))
+        bands.append((bid, start, row - 1, b.get('source', '')))
         ws.cell(row=start, column=1).fill = BANDFILL
 
-    ws.freeze_panes = ws.cell(row=FIRST_DATA_ROW, column=NKEY + 1)
-    ws.auto_filter.ref = (f"A{hr}:{CL(NKEY)}{row - 1}")
-    ws.column_dimensions['A'].width = 8
-    ws.column_dimensions['B'].width = 9
-    ws.column_dimensions['C'].width = 11
-    ws.column_dimensions['D'].width = 8
-    ws.column_dimensions[CL(NKEY + 1)].width = 9
-    ws.column_dimensions[CL(NKEY + 2)].width = 34
+    ws.freeze_panes = ws.cell(row=FIRST_DATA_ROW, column=nkey + 1)
+    ws.auto_filter.ref = (f"A{hr}:{CL(nkey)}{row - 1}")
+    for i, (name, _) in enumerate(keydefs, 1):
+        ws.column_dimensions[CL(i)].width = {'Region': 8, 'Code': 9, 'RowType': 11,
+                                             'SrcRow': 8, 'ABS_Table': 10,
+                                             'Margin': 15}.get(name, 10)
+    ws.column_dimensions[CL(nkey + 1)].width = 9
+    ws.column_dimensions[CL(nkey + 2)].width = 34
     return bands, band, width, row - 1
 
 
@@ -187,6 +192,102 @@ def main():
     summary.append(('RAW_Multipliers', bands, band, width, last))
     print(f"  RAW_Multipliers  {len(bands)} regions, band {band} rows, "
           f"{width} source cols, last row {last}")
+
+    # ------------------------------------------------------------- margins
+    # ABS Tables 23-34 (the twelve margins) and Table 35 (net taxes), stacked
+    # with ABS_Table and Margin as the identity keys. Those two say only WHICH
+    # source block a row came from. The margin -> earning-industry assignment
+    # is a transformation, not identity, so it lives in Lists_MarginMap where
+    # it can be audited in one place - see rule 2.
+    #
+    # There is no Region key here: the ABS publishes margin and tax matrices
+    # nationally only. A state run uses national rates, which is a disclosed
+    # limitation, not an oversight.
+    abs_t = src.get('abs') or {}
+    mt = src['margin_tables']
+    mblocks = []
+    for k in sorted(mt, key=int) + ['35']:
+        key = 'T' + k
+        if key not in abs_t:
+            print(f"  ! {key} missing from data/abs/ - not stacked")
+            continue
+        mblocks.append((k, abs_t[key]))
+    if mblocks:
+        names = dict({k: v[0] for k, v in mt.items()}, **{'35': 'NetTaxes'})
+        keydefs = [('ABS_Table', lambda bid, m: int(bid)),
+                   ('Margin', lambda bid, m: names.get(bid, '')),
+                   ('Code', lambda bid, m: m['code'] or m['raw_code']),
+                   ('RowType', lambda bid, m: m['row_type']),
+                   ('SrcRow', lambda bid, m: m['src_row'])]
+        bands, band, width, last = write_stacked(
+            wb, 'RAW_Margins',
+            'RAW — ABS Tables 23-34 (margins) and 35 (net taxes), stacked. '
+            'Product by using industry and final use, $m 2023-24. NATIONAL ONLY',
+            mblocks,
+            'Verbatim, including the Re-exports row and the Total row and columns. '
+            'Filter on ABS_Table or Margin to isolate one table. Tables 23-34 sum to '
+            '$421,410m on the 115-code spine and $422,034m including re-exports; '
+            'Table 35 is $168,673m. Margin rates are national - the ABS publishes no '
+            'state margin or tax matrices.',
+            keydefs=keydefs, hdr_src=(0, 1))
+        summary.append(('RAW_Margins', bands, band, width, last))
+        print(f"  RAW_Margins      {len(bands)} tables, band {band} rows, "
+              f"{width} source cols, last row {last}")
+
+    # Table 21 - the independent control total, by earning industry.
+    if 'T21' in abs_t:
+        bands, band, width, last = write_stacked(
+            wb, 'RAW_T21_Control',
+            'RAW — ABS Table 21. Composition of supply by margin commodity, '
+            '$m 2023-24. The independent control total',
+            [('21', abs_t['T21'])],
+            'Verbatim. Margin commodity total is $422,034m, which is Tables 23-34 '
+            'including their Re-exports rows. Use as the gate on any re-paste.',
+            keydefs=[('ABS_Table', lambda bid, m: int(bid)),
+                     ('Code', lambda bid, m: m['code'] or m['raw_code']),
+                     ('RowType', lambda bid, m: m['row_type']),
+                     ('SrcRow', lambda bid, m: m['src_row'])],
+            hdr_src=(0,))
+        summary.append(('RAW_T21_Control', bands, band, width, last))
+        print(f"  RAW_T21_Control  control totals, last row {last}")
+
+    # Lists_MarginMap - the analytical assignment, kept OUT of RAW.
+    lm = wb.create_sheet('Lists_MarginMap')
+    lm.cell(row=1, column=1, value='Lists — margin table to earning IOIG').font = \
+        Font(bold=True, size=13)
+    lm.cell(row=2, column=1, value=(
+        'This is a mapping, not source data, so it lives here rather than in a RAW '
+        'tab (rule 2). Verified against ABS Table 21 to the dollar. Join to '
+        'RAW_Margins on ABS_Table.')).font = NOTE
+    for i, h in enumerate(['ABS_Table', 'Margin', 'Earning IOIG', 'Spine $m',
+                           'Re-exports $m'], 1):
+        c = lm.cell(row=4, column=i, value=h)
+        c.font = H2
+        c.fill = KEYFILL
+    ctrl = src.get('margin_control', {})
+    r = 4
+    for k in sorted(mt, key=int):
+        r += 1
+        name, earner = mt[k]
+        lm.cell(row=r, column=1, value=int(k))
+        lm.cell(row=r, column=2, value=name)
+        e = lm.cell(row=r, column=3, value=earner)
+        e.number_format = '@'
+        lm.cell(row=r, column=4, value=ctrl.get(name))
+        if 'T' + k in abs_t:
+            rex = next((row[126] for row, m in zip(abs_t['T' + k]['verbatim'],
+                                                   abs_t['T' + k]['meta'])
+                        if m['row_type'] == 'ReExports'), None)
+            lm.cell(row=r, column=5, value=rex)
+    r += 1
+    lm.cell(row=r, column=2, value='TOTAL 23-34').font = H2
+    lm.cell(row=r, column=4, value=src.get('margin_total_spine')).font = H2
+    r += 2
+    lm.cell(row=r, column=2, value='Net taxes (Table 35)')
+    lm.cell(row=r, column=3, value='n/a — leakage to government')
+    lm.cell(row=r, column=4, value=src.get('net_tax_total_spine'))
+    for col, w in zip('ABCDE', [11, 16, 26, 12, 14]):
+        lm.column_dimensions[col].width = w
 
     # ------------------------------------------------------------------ INDEX
     idx.cell(row=1, column=1, value='RAW stacked layer — index and paste guide').font = \
