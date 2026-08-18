@@ -25,7 +25,7 @@ STACKED = ROOT / 'output' / 'IO_RAW_Stacked.xlsx'
 REGIONS = ['Aus', 'NSW', 'Vic', 'QLD', 'SA', 'WA', 'Tas', 'NT', 'ACT']
 SHEET = {'Aus': 'Aus', 'NSW': 'NSW', 'Vic': 'Vic', 'QLD': 'Qld', 'SA': 'SA',
          'WA': 'WA', 'Tas': 'Tas', 'NT': 'NT', 'ACT': 'ACT'}
-NKEY = 4
+NKEY = 5   # Region, Code, RowType, SrcRow, Key
 TABS = {'RAW_T5': ('%s Table 5 FY23', 165, 141),
         'RAW_T8': ('%s Table 8 FY23', 158, 136),
         'RAW_Multipliers': ('%s multiplier summary FY23', 136, 181)}
@@ -123,7 +123,7 @@ def main():
     # columns (ABS_Table, Margin, Code, RowType, SrcRow) rather than four.
     import glob
     import os
-    MKEY = 5
+    MKEY = 6   # ABS_Table, Margin, Code, RowType, SrcRow, Key
     ABS_FIRST, ABS_LAST, ABS_COLS = 4, 121, 127
     absfiles = {}
     for f in glob.glob(str(ROOT / 'data' / 'abs' / '*.xls*')):
