@@ -522,6 +522,17 @@ def main():
             ws.cell(row=r, column=6, value=amt)
         else:
             ws.cell(row=r, column=5, value='N')
+    # Column N shows the purchasers-price value of the ABS cell this line strips
+    # against. Zero means there is nothing there - the bill-of-quantities-into-GFCF
+    # trap - and QA gate 7 counts them. It also replaces an array-MATCH gate that
+    # returned #VALUE!: INDEX(range, MATCH(array,...)) does not evaluate as an array.
+    hdr(ws, 5, ['ABS cell $m'], col0=6 + NYR)
+    for i in range(NLINE):
+        r = I0 + i
+        ws.cell(row=r, column=6 + NYR, value=(
+            f'=IFERROR(INDEX(CALC_Rates!$C${R0}:$J${R1},'
+            f'MATCH($C{r},{RCODES},0),MATCH($D{r},{GRPNAMES},0)),0)')).number_format = MONEY
+    ws.column_dimensions[CL(6 + NYR)].width = 13
     I1 = I0 + NLINE - 1
     # No leading '=' : xlsx data validation takes a bare range, and a stray
     # equals sign makes the whole workbook unloadable.
@@ -774,10 +785,7 @@ def main():
          'Margins lost or double counted')
     gate('Every included line lands on a non-empty ABS cell',
          f'=IF(SUMPRODUCT(--(IN_Shock!$F${I0}:$F${I1}>0),'
-         f'--(IN_Shock!$C${I0}:$C${I1}<>""))'
-         f'=SUMPRODUCT(--(IN_Shock!$F${I0}:$F${I1}>0),--(IN_Shock!$C${I0}:$C${I1}<>""),'
-         f'--(IFERROR(INDEX(CALC_Rates!$C${R0}:$C${R1},'
-         f'MATCH(IN_Shock!$C${I0}:$C${I1},{RCODES},0)),0)>0)),"PASS","REVIEW")',
+         f'--(IN_Shock!${CL(6 + NYR)}${I0}:${CL(6 + NYR)}${I1}=0))=0,"PASS","REVIEW")',
          'The bill-of-quantities-into-GFCF trap: a line with no ABS cell to strip against')
     gate('Simple = initial + production induced',
          f'=IF(SUMPRODUCT(--(ABS(MAP_Multipliers!${CL(mcol("Output multipliers", i_simp))}${M0}:'
@@ -808,7 +816,8 @@ def main():
          f'RAW_Margins!$D${geo["RAW_Margins"]["first"]}:$D${geo["RAW_Margins"]["last"]},'
          f'"Product",RAW_Margins!$A${geo["RAW_Margins"]["first"]}:'
          f'$A${geo["RAW_Margins"]["last"]},"<35")-{src["margin_total_spine"]})<1,"PASS","FAIL")',
-         'The ABS margin tables are the wrong vintage or incomplete')
+         'The ABS margin tables are the wrong vintage or incomplete. A subset '
+         'build fails this by construction - it holds only part of the spine')
     gate('Direct vector reconciles to the strip',
          f'=IF(ABS(CALC_Vector!$C${VTOT}-(SUMIFS(CALC_Strip!$F${P0}:$F${P1},'
          f'CALC_Strip!$D${P0}:$D${P1},"Domestic",CALC_Strip!$E${P0}:$E${P1},"N")'
