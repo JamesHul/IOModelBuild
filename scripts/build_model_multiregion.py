@@ -98,6 +98,40 @@ EXAMPLE = [
     ('Aus', 'National program overlay', '3101', 'Q5_GFCF_GG', 'N', 50.0),
 ]
 
+# IOMODEL_SHOCK loads a real spending table into IN_Shock instead of the
+# worked example. The file must be already concorded to IOIG codes.
+SHOCK_REGION = {'National': 'Aus', 'NSW': 'NSW', 'VIC': 'Vic', 'QLD': 'QLD',
+                'SA': 'SA', 'WA': 'WA', 'TAS': 'Tas', 'NT': 'NT', 'ACT': 'ACT'}
+
+
+def load_shock(path, group='Q1_HFCE'):
+    """
+    Read a long-format spending table: Geography, Geography type, ABS code,
+    ABS category, Spending ($bn), Spending ($m). Amounts are taken in $m,
+    because the multipliers are per $m and employment is FTE per $m - feeding
+    raw dollars in would inflate every job number a millionfold.
+
+    Zero rows are dropped: they would occupy a line and contribute nothing.
+    """
+    wb = openpyxl.load_workbook(path, data_only=True)
+    sheet = next((n for n in wb.sheetnames if 'long' in n.lower()), wb.sheetnames[0])
+    out = []
+    for r in wb[sheet].iter_rows(min_row=3, values_only=True):
+        if not r or not r[0]:
+            continue
+        geo, _gt, code, cat, _bn, amt = r[:6]
+        if not isinstance(amt, (int, float)) or amt == 0:
+            continue
+        reg = SHOCK_REGION.get(str(geo).strip())
+        if reg is None:
+            raise SystemExit(f'unknown geography {geo!r} in {path}')
+        c = str(code).strip()
+        if c.endswith('.0'):
+            c = c[:-2]
+        out.append((reg, f'{geo} - {str(cat)[:40]}', c.zfill(4), group, 'N', float(amt)))
+    wb.close()
+    return out
+
 
 def band(ws, row, text, width):
     ws.cell(row=row, column=1, value=text).font = H1
@@ -118,9 +152,16 @@ def main():
     abs_t, mult = src['abs'], src['multipliers']
     spine = [(m['code'], m['label']) for m in abs_t['T23']['meta']
              if m['row_type'] == 'Product']
+    shock_path = os.environ.get('IOMODEL_SHOCK')
+    shock = load_shock(shock_path) if shock_path else list(EXAMPLE)
+    global NLINE
+    if shock_path:
+        NLINE = len(shock) + 25          # headroom for hand-added lines
+        print(f'  shock: {len(shock)} lines from {Path(shock_path).name}, '
+              f'IN_Shock sized to {NLINE}')
     subset = bool(os.environ.get('IOMODEL_SUBSET'))
     if subset:
-        keep = {e[2] for e in EXAMPLE} | {v[1] for v in src['margin_tables'].values()}
+        keep = {e[2] for e in shock} | {v[1] for v in src['margin_tables'].values()}
         keep |= {'6700', '6701'}
         spine = [x for x in spine if x[0] in keep]
         print(f'  SUBSET BUILD: {len(spine)} spine rows')
@@ -263,6 +304,16 @@ def main():
     ws.cell(row=3, column=1, value=(
         'Direct only = Y for a line whose supply chain you have already itemised. It is '
         'counted as direct but never multiplied.')).font = NOTE
+    if shock_path:
+        regs_in = {l[0] for l in shock}
+        if 'Aus' in regs_in and len(regs_in) > 1:
+            ws.cell(row=4, column=1, value=(
+                'NOTE: this sheet holds BOTH the state lines and a national (Aus) set '
+                'covering the same spending. The TOTAL below is therefore double the '
+                'study, and is not a meaningful figure. Read results per region on '
+                'OUT_Summary: the Aus rows are the national answer, the state rows are '
+                'the jurisdictional breakdown, and the two are never added.')
+            ).font = Font(bold=True, color='9C0006')
     hdr(ws, 5, ['#', 'Region', 'Description', 'IOIG code', 'Column group', 'Direct only']
         + [f'Year {y + 1}' for y in range(NYR)])
     I0 = 6
@@ -276,8 +327,8 @@ def main():
             if j >= 7:
                 c.number_format = MONEY
         ws.cell(row=r, column=4).number_format = '@'
-        if i < len(EXAMPLE):
-            rg, d, code, grp, only, amt = EXAMPLE[i]
+        if i < len(shock):
+            rg, d, code, grp, only, amt = shock[i]
             for j, v in zip(range(2, 8), [rg, d, code, grp, only, amt]):
                 ws.cell(row=r, column=j, value=v)
         else:
@@ -289,7 +340,7 @@ def main():
         ws.add_data_validation(dv)
         dv.add(rf)
     TR = I1 + 2
-    ws.cell(row=TR, column=3, value='TOTAL').font = H2
+    ws.cell(row=TR, column=3, value='TOTAL (all lines - see note above)').font = H2
     for y in range(NYR):
         ws.cell(row=TR, column=7 + y, value=(
             f'=SUM({CL(7 + y)}{I0}:{CL(7 + y)}{I1})')).number_format = MONEY
