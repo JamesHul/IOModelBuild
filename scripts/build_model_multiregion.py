@@ -47,6 +47,9 @@ import build_raw_stacked as RS
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / 'build' / 'sources.pkl'
 OUTFILE = ROOT / 'output' / 'IO_Impact_Model_MultiRegion_v0-4.xlsx'
+# A study spanning nine jurisdictions needs a line per (region, IOIG code), so
+# IOMODEL_LINES builds a taller IN_Shock. 32 household categories concorded to
+# ~50 IOIG codes across 9 jurisdictions is ~450 lines.
 SUBSET_OUT = ROOT / 'build' / 'IO_MultiRegion_subset.xlsx'
 
 H1 = Font(bold=True, size=14, color='FFFFFF')
@@ -80,8 +83,8 @@ MARGIN_ORDER = ['Wholesale', 'Retail', 'RestHotelClub', 'Road', 'Rail', 'Pipelin
                 'Water', 'Air', 'PortHandling', 'MarineIns', 'Gas', 'Electricity']
 MEASURES = ['Domestic', 'Imports', 'NetTaxes'] + MARGIN_ORDER
 NM = len(MEASURES)
-NYR = 8
-NLINE = 40
+NYR = int(os.environ.get('IOMODEL_YEARS', '8'))
+NLINE = int(os.environ.get('IOMODEL_LINES', '40'))
 REPORT = [('Output multipliers', 'Output, $m', MONEY),
           ('Income multipliers', 'Wages and salaries, $m', MONEY),
           ('Value added multipliers', 'Value added at basic prices, $m', MONEY),

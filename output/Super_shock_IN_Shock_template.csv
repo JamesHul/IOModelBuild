@@ -1,0 +1,586 @@
+Region,Description,IOIG code,Column group,Direct only,Year 1 $m,HEC category,Weight
+NSW,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+NSW,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+NSW,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+NSW,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+NSW,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+NSW,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+NSW,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+NSW,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+NSW,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+NSW,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+NSW,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+NSW,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+NSW,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+NSW,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+NSW,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+NSW,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+NSW,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+NSW,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+NSW,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+NSW,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+NSW,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+NSW,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+NSW,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+NSW,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+NSW,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+NSW,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+NSW,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+NSW,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+NSW,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+NSW,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+NSW,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+NSW,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+NSW,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+NSW,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+NSW,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+NSW,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+NSW,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+NSW,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+NSW,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+NSW,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+NSW,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+NSW,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+NSW,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+NSW,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+NSW,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+NSW,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+NSW,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+NSW,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+NSW,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+NSW,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+NSW,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+NSW,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+NSW,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+NSW,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+NSW,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+NSW,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+NSW,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+NSW,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+NSW,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+NSW,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+NSW,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+NSW,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+NSW,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+NSW,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+NSW,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+Vic,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+Vic,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+Vic,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+Vic,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+Vic,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+Vic,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+Vic,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+Vic,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+Vic,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+Vic,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+Vic,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+Vic,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+Vic,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+Vic,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+Vic,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+Vic,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+Vic,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+Vic,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+Vic,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+Vic,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+Vic,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+Vic,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+Vic,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+Vic,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+Vic,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+Vic,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+Vic,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+Vic,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+Vic,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+Vic,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+Vic,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+Vic,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+Vic,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+Vic,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+Vic,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+Vic,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+Vic,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+Vic,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+Vic,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+Vic,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+Vic,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+Vic,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+Vic,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+Vic,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+Vic,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+Vic,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+Vic,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+Vic,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+Vic,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+Vic,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Vic,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Vic,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Vic,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+Vic,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+Vic,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+Vic,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+Vic,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+Vic,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+Vic,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+Vic,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+Vic,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+Vic,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+Vic,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+Vic,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+Vic,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+QLD,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+QLD,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+QLD,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+QLD,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+QLD,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+QLD,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+QLD,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+QLD,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+QLD,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+QLD,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+QLD,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+QLD,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+QLD,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+QLD,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+QLD,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+QLD,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+QLD,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+QLD,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+QLD,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+QLD,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+QLD,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+QLD,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+QLD,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+QLD,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+QLD,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+QLD,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+QLD,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+QLD,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+QLD,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+QLD,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+QLD,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+QLD,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+QLD,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+QLD,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+QLD,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+QLD,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+QLD,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+QLD,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+QLD,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+QLD,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+QLD,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+QLD,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+QLD,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+QLD,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+QLD,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+QLD,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+QLD,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+QLD,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+QLD,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+QLD,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+QLD,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+QLD,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+QLD,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+QLD,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+QLD,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+QLD,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+QLD,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+QLD,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+QLD,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+QLD,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+QLD,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+QLD,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+QLD,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+QLD,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+QLD,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+SA,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+SA,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+SA,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+SA,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+SA,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+SA,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+SA,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+SA,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+SA,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+SA,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+SA,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+SA,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+SA,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+SA,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+SA,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+SA,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+SA,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+SA,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+SA,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+SA,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+SA,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+SA,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+SA,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+SA,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+SA,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+SA,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+SA,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+SA,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+SA,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+SA,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+SA,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+SA,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+SA,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+SA,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+SA,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+SA,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+SA,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+SA,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+SA,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+SA,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+SA,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+SA,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+SA,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+SA,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+SA,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+SA,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+SA,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+SA,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+SA,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+SA,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+SA,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+SA,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+SA,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+SA,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+SA,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+SA,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+SA,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+SA,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+SA,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+SA,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+SA,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+SA,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+SA,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+SA,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+SA,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+WA,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+WA,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+WA,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+WA,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+WA,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+WA,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+WA,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+WA,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+WA,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+WA,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+WA,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+WA,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+WA,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+WA,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+WA,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+WA,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+WA,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+WA,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+WA,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+WA,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+WA,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+WA,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+WA,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+WA,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+WA,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+WA,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+WA,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+WA,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+WA,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+WA,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+WA,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+WA,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+WA,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+WA,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+WA,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+WA,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+WA,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+WA,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+WA,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+WA,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+WA,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+WA,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+WA,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+WA,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+WA,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+WA,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+WA,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+WA,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+WA,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+WA,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+WA,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+WA,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+WA,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+WA,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+WA,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+WA,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+WA,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+WA,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+WA,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+WA,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+WA,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+WA,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+WA,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+WA,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+WA,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+Tas,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+Tas,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+Tas,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+Tas,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+Tas,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+Tas,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+Tas,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+Tas,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+Tas,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+Tas,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+Tas,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+Tas,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+Tas,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+Tas,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+Tas,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+Tas,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+Tas,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+Tas,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+Tas,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+Tas,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+Tas,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+Tas,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+Tas,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+Tas,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+Tas,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+Tas,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+Tas,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+Tas,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+Tas,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+Tas,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+Tas,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+Tas,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+Tas,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+Tas,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+Tas,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+Tas,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+Tas,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+Tas,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+Tas,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+Tas,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+Tas,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+Tas,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+Tas,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+Tas,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+Tas,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+Tas,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+Tas,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+Tas,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+Tas,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+Tas,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Tas,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Tas,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Tas,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+Tas,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+Tas,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+Tas,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+Tas,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+Tas,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+Tas,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+Tas,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+Tas,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+Tas,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+Tas,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+Tas,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+Tas,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+NT,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+NT,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+NT,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+NT,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+NT,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+NT,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+NT,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+NT,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+NT,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+NT,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+NT,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+NT,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+NT,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+NT,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+NT,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+NT,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+NT,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+NT,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+NT,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+NT,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+NT,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+NT,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+NT,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+NT,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+NT,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+NT,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+NT,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+NT,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+NT,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+NT,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+NT,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+NT,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+NT,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+NT,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+NT,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+NT,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+NT,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+NT,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+NT,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+NT,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+NT,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+NT,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+NT,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+NT,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+NT,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+NT,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+NT,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+NT,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+NT,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+NT,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+NT,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+NT,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+NT,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+NT,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+NT,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+NT,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+NT,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+NT,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+NT,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+NT,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+NT,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+NT,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+NT,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+NT,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+NT,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+ACT,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+ACT,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+ACT,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+ACT,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+ACT,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+ACT,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+ACT,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+ACT,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+ACT,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+ACT,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+ACT,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+ACT,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+ACT,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+ACT,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+ACT,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+ACT,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+ACT,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+ACT,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+ACT,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+ACT,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+ACT,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+ACT,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+ACT,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+ACT,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+ACT,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+ACT,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+ACT,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+ACT,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+ACT,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+ACT,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+ACT,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+ACT,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+ACT,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+ACT,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+ACT,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+ACT,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+ACT,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+ACT,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+ACT,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+ACT,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+ACT,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+ACT,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+ACT,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+ACT,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+ACT,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+ACT,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+ACT,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+ACT,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+ACT,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+ACT,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+ACT,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+ACT,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+ACT,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+ACT,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+ACT,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+ACT,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+ACT,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+ACT,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+ACT,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+ACT,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+ACT,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+ACT,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+ACT,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+ACT,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+ACT,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
+Aus,"Other recreation durables, gardens and pets - Other manufactured products",2502,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.55
+Aus,"Other recreation durables, gardens and pets - Other agriculture",0103,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.25
+Aus,"Other recreation durables, gardens and pets - Other food product manufacturing",1109,Q1_HFCE,N,,"Other recreation durables, gardens and pets",0.2
+Aus,Financial and other services - Finance,6201,Q1_HFCE,N,,Financial and other services,0.7
+Aus,Financial and other services - Auxiliary finance and insurance services,6401,Q1_HFCE,N,,Financial and other services,0.3
+Aus,Personal effects - Other manufactured products,2502,Q1_HFCE,N,,Personal effects,1.0
+Aus,"Household textiles, glassware and utensils - Textile product manufacturing",1303,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.45
+Aus,"Household textiles, glassware and utensils - Glass and glass product manufacturing",2001,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+Aus,"Household textiles, glassware and utensils - Ceramic product manufacturing",2002,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.15
+Aus,"Household textiles, glassware and utensils - Other fabricated metal product manufacturing",2204,Q1_HFCE,N,,"Household textiles, glassware and utensils",0.2
+Aus,Tools and equipment for house and garden - Other fabricated metal product manufacturing,2204,Q1_HFCE,N,,Tools and equipment for house and garden,0.6
+Aus,Tools and equipment for house and garden - Specialised and other machinery and equipment manufacturing,2405,Q1_HFCE,N,,Tools and equipment for house and garden,0.4
+Aus,Postal services - Postal and courier pick-up and delivery service,5101,Q1_HFCE,N,,Postal services,1.0
+Aus,"Education - Arts, sports, adult and other education services",8210,Q1_HFCE,N,,Education,0.5
+Aus,"Education - Technical, vocational and tertiary education services",8110,Q1_HFCE,N,,Education,0.35
+Aus,Education - Primary and secondary education services,8010,Q1_HFCE,N,,Education,0.15
+Aus,"Vehicle operation (fuel, servicing, etc.) - Petroleum and coal product manufacturing",1701,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.55
+Aus,"Vehicle operation (fuel, servicing, etc.) - Automotive repair and maintenance",9401,Q1_HFCE,N,,"Vehicle operation (fuel, servicing, etc.)",0.45
+Aus,"Routine household maintenance - Building cleaning, pest control and other support services",7310,Q1_HFCE,N,,Routine household maintenance,0.6
+Aus,Routine household maintenance - Other repair and maintenance,9402,Q1_HFCE,N,,Routine household maintenance,0.4
+Aus,Clothing and footwear - Clothing manufacturing,1305,Q1_HFCE,N,,Clothing and footwear,0.8
+Aus,Clothing and footwear - Footwear manufacturing,1306,Q1_HFCE,N,,Clothing and footwear,0.2
+Aus,"Newspapers, books and stationery - Publishing (except internet and music publishing)",5401,Q1_HFCE,N,,"Newspapers, books and stationery",0.7
+Aus,"Newspapers, books and stationery - Paper stationery and other converted paper product manufacturing",1502,Q1_HFCE,N,,"Newspapers, books and stationery",0.3
+Aus,"Transport services, holidays and accommodation - Accommodation",4401,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.4
+Aus,"Transport services, holidays and accommodation - Air and space transport",4901,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.35
+Aus,"Transport services, holidays and accommodation - Road transport",4601,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.15
+Aus,"Transport services, holidays and accommodation - Employment, travel agency and other administrative services",7210,Q1_HFCE,N,,"Transport services, holidays and accommodation",0.1
+Aus,Medical products and appliances - Human pharmaceutical and medicinal product manufacturing,1801,Q1_HFCE,N,,Medical products and appliances,1.0
+Aus,Recreational and cultural services - Sports and recreation,9101,Q1_HFCE,N,,Recreational and cultural services,0.4
+Aus,"Recreational and cultural services - Heritage, creative and performing arts",8901,Q1_HFCE,N,,Recreational and cultural services,0.25
+Aus,Recreational and cultural services - Gambling,9201,Q1_HFCE,N,,Recreational and cultural services,0.25
+Aus,Recreational and cultural services - Motion picture and sound recording,5501,Q1_HFCE,N,,Recreational and cultural services,0.1
+Aus,Furniture and furnishings - Furniture manufacturing,2501,Q1_HFCE,N,,Furniture and furnishings,1.0
+Aus,"Audio-visual, photographic and IT equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,"Audio-visual, photographic and IT equipment",1.0
+Aus,Personal care - Personal services,9501,Q1_HFCE,N,,Personal care,0.55
+Aus,Personal care - Cleaning compounds and toiletry preparation manufacturing,1804,Q1_HFCE,N,,Personal care,0.45
+Aus,Rent - Actual rent for housing,6701,Q1_HFCE,N,,Rent,1.0
+Aus,Catering services - Food and beverage services,4501,Q1_HFCE,N,,Catering services,1.0
+Aus,Telephone and internet services - Telecommunication services,5801,Q1_HFCE,N,,Telephone and internet services,0.85
+Aus,Telephone and internet services - Internet service providers and data processing,5701,Q1_HFCE,N,,Telephone and internet services,0.15
+Aus,Dwelling repairs/maintenance/improvements - Construction services,3201,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.65
+Aus,Dwelling repairs/maintenance/improvements - Residential building construction,3001,Q1_HFCE,N,,Dwelling repairs/maintenance/improvements,0.35
+Aus,"Electricity, gas and other fuels - Electricity transmission, distribution, on selling",2605,Q1_HFCE,N,,"Electricity, gas and other fuels",0.7
+Aus,"Electricity, gas and other fuels - Gas supply",2701,Q1_HFCE,N,,"Electricity, gas and other fuels",0.3
+Aus,Health services - Health care services,8401,Q1_HFCE,N,,Health services,1.0
+Aus,Food and non-alcoholic beverages - Other food product manufacturing,1109,Q1_HFCE,N,,Food and non-alcoholic beverages,0.28
+Aus,Food and non-alcoholic beverages - Meat and meat product manufacturing,1101,Q1_HFCE,N,,Food and non-alcoholic beverages,0.18
+Aus,Food and non-alcoholic beverages - Fruit and vegetable product manufacturing,1104,Q1_HFCE,N,,Food and non-alcoholic beverages,0.12
+Aus,Food and non-alcoholic beverages - Dairy product manufacturing,1103,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Aus,Food and non-alcoholic beverages - Bakery product manufacturing,1107,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Aus,"Food and non-alcoholic beverages - Soft drinks, cordials and syrup manufacturing",1201,Q1_HFCE,N,,Food and non-alcoholic beverages,0.1
+Aus,Food and non-alcoholic beverages - Grain mill and cereal product manufacturing,1106,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+Aus,Food and non-alcoholic beverages - Sugar and confectionery manufacturing,1108,Q1_HFCE,N,,Food and non-alcoholic beverages,0.06
+Aus,Household appliances - Domestic appliance manufacturing,2404,Q1_HFCE,N,,Household appliances,1.0
+Aus,"Tobacco - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Tobacco,1.0
+Aus,Insurance (cash-outlay basis) - Insurance and superannuation funds,6301,Q1_HFCE,N,,Insurance (cash-outlay basis),1.0
+Aus,Social protection and aged care - Residential care and social assistance services,8601,Q1_HFCE,N,,Social protection and aged care,1.0
+Aus,"Alcoholic beverages - Wine, spirits and tobacco",1205,Q1_HFCE,N,,Alcoholic beverages,0.6
+Aus,Alcoholic beverages - Beer manufacturing,1202,Q1_HFCE,N,,Alcoholic beverages,0.4
+Aus,"Rates, water and body corporate - Water supply, sewerage and drainage services",2801,Q1_HFCE,N,,"Rates, water and body corporate",0.45
+Aus,"Rates, water and body corporate - Public administration and regulatory services",7501,Q1_HFCE,N,,"Rates, water and body corporate",0.35
+Aus,"Rates, water and body corporate - Non-residential property operators and real estate services",6702,Q1_HFCE,N,,"Rates, water and body corporate",0.2
+Aus,Motor vehicle purchase - Motor vehicles and parts; other transport equipment manufacturing,2301,Q1_HFCE,N,,Motor vehicle purchase,1.0
+Aus,"Telephone equipment - Professional, scientific, computer and electronic equipment manufacturing",2401,Q1_HFCE,N,,Telephone equipment,1.0
