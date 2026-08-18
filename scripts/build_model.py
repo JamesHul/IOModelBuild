@@ -33,6 +33,7 @@ Design notes that matter:
     to 6701 and flagged. It carries $21m of net taxes and no margins at all, so
     the bridge is close to immaterial - but it is still disclosed.
 """
+import os
 import pickle
 from datetime import date
 from pathlib import Path
@@ -47,6 +48,7 @@ import build_raw_stacked as RS
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / 'build' / 'sources.pkl'
 OUTFILE = ROOT / 'output' / 'IO_Impact_Model_v0-3.xlsx'
+SUBSET_OUT = ROOT / 'build' / 'IO_Model_subset.xlsx'
 
 H1 = Font(bold=True, size=14, color='FFFFFF')
 H2 = Font(bold=True, size=11)
@@ -120,6 +122,14 @@ def main():
     # ---- the 115-code spine, from the ABS margin tables --------------------
     spine = [(m['code'], m['label']) for m in abs_t['T23']['meta']
              if m['row_type'] == 'Product']
+    # IOMODEL_SUBSET builds a structurally identical but much smaller workbook -
+    # same formula shapes, fewer spine rows - so the whole chain can actually be
+    # recalculated and checked. It is a test harness, never a delivery build.
+    if os.environ.get('IOMODEL_SUBSET'):
+        keep = {e[1] for e in EXAMPLE} | {v[1] for v in src['margin_tables'].values()}
+        keep |= {'6700', '6701'}
+        spine = [x for x in spine if x[0] in keep]
+        print(f'  SUBSET BUILD: {len(spine)} spine rows')
     NS = len(spine)
     mult_codes = {m['code'] for m in mult['regions']['Aus']['meta']
                   if m['row_type'] == 'Industry'}
@@ -259,7 +269,9 @@ def main():
     GRPNAMES = f'Lists!$G${G0}:$G${G1}'
 
     # ======================================================== RAW tabs
-    geo = RS.write_raw_tabs(wb, src, verbose=False)
+    _sub = {c for c, _ in spine} if os.environ.get('IOMODEL_SUBSET') else None
+    geo = RS.write_raw_tabs(wb, src, verbose=False, subset=_sub,
+                            regions=['Aus'] if _sub else None)
     mm = RS.write_margin_map(wb, src)
 
     def rng(tab, first_col):
@@ -865,6 +877,7 @@ def main():
 
 if __name__ == '__main__':
     wb = main()
-    OUTFILE.parent.mkdir(exist_ok=True)
-    wb.save(OUTFILE)
-    print(f'wrote {OUTFILE}  ({OUTFILE.stat().st_size / 1e6:.1f} MB)')
+    out = SUBSET_OUT if os.environ.get('IOMODEL_SUBSET') else OUTFILE
+    out.parent.mkdir(exist_ok=True)
+    wb.save(out)
+    print(f'wrote {out}  ({out.stat().st_size / 1e6:.1f} MB)')

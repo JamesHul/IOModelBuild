@@ -22,9 +22,11 @@ non-negotiable rules and domain facts, and
 │   ├── inspect_inputs.py           Report the shape of every file in data/
 │   ├── load_sources.py             data/ ─▶ build/sources.pkl (verbatim)
 │   ├── check_sources.py            Integrity gates on build/sources.pkl
-│   ├── build_raw_stacked.py        build/sources.pkl ─▶ stacked RAW workbook
+│   ├── build_raw_stacked.py        Stacked RAW layer (also imported by the model)
 │   ├── verify_stacked.py           Prove the stacked tabs are verbatim
-│   └── build_model.py              build/sources.pkl ─▶ output/ workbook
+│   ├── build_model.py              build/sources.pkl ─▶ the v0.3 model
+│   ├── recalc_model.py             Recalculate and scan for error cells
+│   └── check_model_numbers.py      Independent recomputation of the arithmetic
 │
 ├── data/                         Source files only — never edited (rule 1)
 │   ├── README.md                   What belongs in each subfolder
@@ -33,8 +35,9 @@ non-negotiable rules and domain facts, and
 │
 ├── build/                        Derived cache (build/sources.pkl) — gitignored
 └── output/                       Generated workbook(s)
-    ├── IO_RAW_Stacked.xlsx         The stacked, verbatim RAW layer
-    └── IO_Impact_Model_v0-2.xlsx   The v0.2 model (pre-rebuild)
+    ├── IO_Impact_Model_v0-3.xlsx   The model — start here
+    ├── IO_RAW_Stacked.xlsx         The stacked RAW layer on its own
+    └── IO_Impact_Model_v0-2.xlsx   The superseded v0.2 model
 ```
 
 ## Where to put files
@@ -68,8 +71,20 @@ python scripts/load_sources.py       # data/ ─▶ build/sources.pkl (verbatim)
 python scripts/check_sources.py      # integrity gates — do not build on a failure
 python scripts/build_raw_stacked.py  # ─▶ output/IO_RAW_Stacked.xlsx
 python scripts/verify_stacked.py     # prove it is verbatim, cell for cell
-python scripts/build_model.py        # build/sources.pkl ─▶ output/ workbook
+python scripts/build_model.py        # ─▶ output/IO_Impact_Model_v0-3.xlsx
+python scripts/check_model_numbers.py  # independent second opinion on the numbers
 ```
+
+To recalculate and scan for error cells, build the reduced workbook first —
+the full one has 66,317 formulas and the engine is slow on it:
+
+```bash
+IOMODEL_SUBSET=1 python scripts/build_model.py   # ─▶ build/IO_Model_subset.xlsx
+python scripts/recalc_model.py build/IO_Model_subset.xlsx
+```
+
+LibreOffice cannot load any xlsx in this container (it fails on a three-cell
+file), so `soffice --convert-to` is not usable for recalculation here.
 
 ### The stacked RAW layer
 

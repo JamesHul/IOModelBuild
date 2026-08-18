@@ -50,14 +50,23 @@ Verified against Table 21 to the dollar.
 
 ## Known state of the code
 
-`scripts/build_model.py` is the working v0.2 generator, proven: 25 tabs, 28,406 formulas, recalculates with zero errors. It does **not** yet comply with rules 1 and 2 above. Four things it does that must be fixed when the real data is loaded:
+`scripts/build_model.py` is the **v0.3** generator: 22 tabs, 66,317 formulas, built entirely on the stacked RAW layer. The four defects listed against v0.2 are fixed — RAW is verbatim, the spine bridge and `n.a.` handling live in `MAP_`, and nothing is trimmed or re-spined on the way in.
 
-1. Drops the `Total Industry Uses`, `Final Uses (Q1 to Q7)` and `Total Supply` columns from the ABS tabs.
-2. Drops the `Re-exports` row from the margin tables, and the primary-input rows (T1, P1-P6, Australian Production, Value Added) from Table 5 and Table 8. Those primary-input rows are exactly what the multiplier reconciliation check needs.
-3. Expands the 114-code state block onto the 115 spine inside the RAW writer, inserting a zero row and column for 6700.
-4. Writes `n.a.` cells in the multiplier set as blanks (4,284 of them) and populates 6700 by duplicating 6701.
+The chain, each tab reading only the ones above it:
 
-The fix: RAW writers take the source block whole; a new `MAP_Spine`, `MAP_Multipliers` and `MAP_StripData` layer does the reshaping in formulas.
+`RAW_*` → `MAP_Spine` → `MAP_Multipliers` / `MAP_StripData` → `CALC_Rates` → `IN_Shock` → `CALC_Strip` → `CALC_Margins` → `CALC_Vector` → `CALC_Impacts` → `OUT_Summary` / `OUT_Detail` / `QA_Checks`.
+
+- **`MAP_Spine` resolves position once.** One `MATCH` per code per RAW block, for the selected region; everything downstream indexes off those row numbers instead of repeating the lookup.
+- **Zero `INDIRECT`, `OFFSET` or `VLOOKUP`** across all 66,317 formulas, confirmed by static scan. That is the payoff for stacking the RAW tabs.
+- **`IOMODEL_SUBSET=1`** builds a structurally identical workbook on a 16-code spine, so the whole chain can actually be recalculated. It is a test harness, never a delivery build.
+
+### Verifying a build
+
+LibreOffice **cannot load any xlsx in this container** — it fails on a three-cell file — so `soffice --convert-to` is not available for recalculation here. Use instead:
+
+- `scripts/recalc_model.py` — recalculates with the `formulas` engine and scans for every error value. On the full 66k-formula workbook it is very slow; run it on the subset build.
+- `scripts/check_model_numbers.py` — recomputes the same economics independently from `sources.pkl`, as a second opinion on the arithmetic rather than the formulas.
+- A static scan for unknown sheet references, out-of-range references and banned functions is fast and catches the most common wiring errors.
 
 ## Working conventions
 

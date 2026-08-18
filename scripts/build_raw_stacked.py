@@ -177,9 +177,24 @@ def write_stacked(wb, tabname, title, blocks, note, keydefs=None, hdr_src=(0, 1)
             'first': FIRST_DATA_ROW, 'nkey': nkey}
 
 
-def write_raw_tabs(wb, src, verbose=True):
+def _shrink(blk, keep):
+    """Test-harness only: drop industry rows outside `keep`, leaving every other
+    row (T1, the P rows, Production, Re-exports, Total) untouched. Formula shapes
+    are unchanged - only the ranges get shorter - so a recalculation of the
+    shrunken workbook still exercises the real logic."""
+    idx = [i for i, m in enumerate(blk['meta'])
+           if m['row_type'] not in ('Industry', 'Dummy', 'Product') or m['code'] in keep]
+    out = dict(blk)
+    out['meta'] = [blk['meta'][i] for i in idx]
+    out['verbatim'] = [blk['verbatim'][i] for i in idx]
+    return out
+
+
+def write_raw_tabs(wb, src, verbose=True, subset=None, regions=None):
     """Add every RAW tab to `wb`. Returns geometry the model layer needs."""
     flows, mult = src['flows'], src['multipliers']
+    global REGIONS
+    _regions = regions or REGIONS
     geo = {}
     for kind, tab, title, note in [
         ('T5', 'RAW_T5', 'RAW - Table 5, all regions stacked. Industry by industry, '
@@ -191,13 +206,17 @@ def write_raw_tabs(wb, src, verbose=True):
          'Verbatim. Used ONLY to derive imports as T8 less T5, cell by cell. '
          'Never build multipliers off this table.'),
     ]:
-        blocks = [(r, flows[(kind, r)]) for r in REGIONS if (kind, r) in flows]
+        blocks = [(r, flows[(kind, r)]) for r in _regions if (kind, r) in flows]
+        if subset:
+            blocks = [(r, _shrink(b, subset)) for r, b in blocks]
         geo[tab] = write_stacked(wb, tab, title, blocks, note)
         if verbose:
             print(f"  {tab:16s} {len(geo[tab]['bands'])} regions, band "
                   f"{geo[tab]['band']}, last row {geo[tab]['last']}")
 
-    mblocks = [(r, mult['regions'][r]) for r in REGIONS if r in mult.get('regions', {})]
+    mblocks = [(r, mult['regions'][r]) for r in _regions if r in mult.get('regions', {})]
+    if subset:
+        mblocks = [(r, _shrink(b, subset)) for r, b in mblocks]
     geo['RAW_Multipliers'] = write_stacked(
         wb, 'RAW_Multipliers',
         'RAW - Multiplier set, all regions stacked. 15 measure blocks x 11 effects, '
@@ -215,6 +234,8 @@ def write_raw_tabs(wb, src, verbose=True):
     names = dict({k: v[0] for k, v in mt.items()}, **{'35': 'NetTaxes'})
     mgblocks = [(k, abs_t['T' + k]) for k in sorted(mt, key=int) + ['35']
                 if 'T' + k in abs_t]
+    if subset:
+        mgblocks = [(k, _shrink(b, subset)) for k, b in mgblocks]
     if mgblocks:
         keydefs = [('ABS_Table', lambda b, m, r: int(b)),
                    ('Margin', lambda b, m, r: names.get(b, '')),
