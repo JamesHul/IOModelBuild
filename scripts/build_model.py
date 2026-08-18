@@ -88,6 +88,9 @@ MARGIN_ORDER = ['Wholesale', 'Retail', 'RestHotelClub', 'Road', 'Rail', 'Pipelin
                 'Water', 'Air', 'PortHandling', 'MarineIns', 'Gas', 'Electricity']
 MEASURES = ['Domestic', 'Imports', 'NetTaxes'] + MARGIN_ORDER          # 15
 NM = len(MEASURES)
+# The strip block also carries the Australian basic values, because the
+# national margin and tax rates have to be measured against the national cell.
+STRIP_MEASURES = MEASURES + ['Aus_Domestic', 'Aus_Imports']
 NYR = 8
 NLINE = 40
 EXAMPLE = [
@@ -300,7 +303,7 @@ def main():
         'instead of repeating the MATCH. 0 means the code is not in that block.')).font = NOTE
     mcols = MARGIN_ORDER + ['NetTaxes']
     hdr(ws, 4, ['Code', 'Name', 'Use code', 'Bridged', 'T5 row', 'T8 row', 'Mult row']
-        + [m[:11] + ' row' for m in mcols])
+        + [m[:11] + ' row' for m in mcols] + ['Aus T5 row', 'Aus T8 row'])
     S0 = 5
     for i in range(NS):
         r = S0 + i
@@ -318,6 +321,13 @@ def main():
         ws.cell(row=r, column=7, value=f'=IFERROR(MATCH({REGION}&"|"&$C{r},{MUK},0),0)')
         for j, mn in enumerate(mcols, 8):
             ws.cell(row=r, column=j, value=f'=IFERROR(MATCH("{mn}|"&$A{r},{MGK},0),0)')
+        # The Australian rows too. Margins and net taxes are published only
+        # nationally, so their RATES must be taken against the national cell.
+        # A national margin over a state-sized denominator makes the rate climb
+        # as the state shrinks - 31% of a household meat dollar nationally but
+        # 77% in Tasmania. A margin rate is a rate.
+        ws.cell(row=r, column=21, value=f'=IFERROR(MATCH("Aus|"&$C{r},{T5K},0),0)')
+        ws.cell(row=r, column=22, value=f'=IFERROR(MATCH("Aus|"&$C{r},{T8K},0),0)')
     S1 = S0 + NS - 1
     ws.column_dimensions['A'].width = 9
     ws.column_dimensions['B'].width = 40
@@ -381,7 +391,7 @@ def main():
         'table is needed. Net taxes and the 12 margins are national ABS data - the ABS '
         'publishes no state margin or tax matrices, so a state run uses national rates.')).font = NOTE
     hdr(ws, 5, ['Code', 'Name'])
-    for mi, meas in enumerate(MEASURES):
+    for mi, meas in enumerate(STRIP_MEASURES):
         c0 = 3 + mi * NG
         c = ws.cell(row=4, column=c0, value=meas)
         c.font = H3
@@ -414,6 +424,17 @@ def main():
             ws.cell(row=r, column=3 + 1 * NG + gi, value=(
                 f'=IF(OR(MAP_Spine!$E{sr}=0,MAP_Spine!$F{sr}=0),0,({t8})-({t5}))')
             ).number_format = MONEY
+            # the same two cells for AUSTRALIA, which is what the national
+            # margin and tax rates must be measured against
+            t5a = (f'SUM(INDEX({T5R},MAP_Spine!$U{sr},{ff}):'
+                   f'INDEX({T5R},MAP_Spine!$U{sr},{fl}))')
+            t8a = (f'SUM(INDEX({T8R},MAP_Spine!$V{sr},{ff}):'
+                   f'INDEX({T8R},MAP_Spine!$V{sr},{fl}))')
+            ws.cell(row=r, column=3 + 15 * NG + gi, value=(
+                f'=IF(MAP_Spine!$U{sr}=0,0,{t5a})')).number_format = MONEY
+            ws.cell(row=r, column=3 + 16 * NG + gi, value=(
+                f'=IF(OR(MAP_Spine!$U{sr}=0,MAP_Spine!$V{sr}=0),0,({t8a})-({t5a}))')
+            ).number_format = MONEY
             # Net taxes and the 12 margins, all from RAW_Margins
             for mi, meas in enumerate(MEASURES[2:], 2):
                 which = 'NetTaxes' if meas == 'NetTaxes' else meas
@@ -431,11 +452,12 @@ def main():
     band(ws, 1, 'CALC_Rates  -  the share of each purchasers-price dollar. The Check '
                 'columns must all read 100%', 10)
     ws.cell(row=2, column=1, value=(
-        'Every component divided by the purchasers-price total of the same cell. The four '
-        'kinds of share - domestic, imports, net taxes, margins - sum to exactly 1 by '
-        'construction, which is the gate on the right.')).font = NOTE
+        'Margins and net taxes are published nationally only, so their rates are taken '
+        'against the NATIONAL purchasers-price cell. What the selected region supplies is '
+        'the split of the basic-price portion between domestic and imported. The four kinds '
+        'of share sum to exactly 1, which is the gate on the right.')).font = NOTE
     hdr(ws, 5, ['Code', 'Name'])
-    c = ws.cell(row=4, column=3, value='Purchasers price, $m')
+    c = ws.cell(row=4, column=3, value='National purchasers price, $m')
     c.font = H3
     c.fill = GREYFILL
     for gi, g in enumerate(GROUPS):
@@ -443,7 +465,15 @@ def main():
         h.font = H3
         h.fill = HDRFILL
         h.alignment = Alignment(wrap_text=True)
-    RATE0 = 11
+    c = ws.cell(row=4, column=3 + NG, value='Basic share of the national cell')
+    c.font = H3
+    c.fill = GREYFILL
+    for gi, g in enumerate(GROUPS):
+        h = ws.cell(row=5, column=3 + NG + gi, value=g[0])
+        h.font = H3
+        h.fill = HDRFILL
+        h.alignment = Alignment(wrap_text=True)
+    RATE0 = 3 + 2 * NG
     for mi, meas in enumerate(MEASURES):
         c0 = RATE0 + mi * NG
         c = ws.cell(row=4, column=c0, value=meas + ' share')
@@ -472,9 +502,32 @@ def main():
         c.font = GREEN
         ws.cell(row=r, column=2, value=f'=MAP_StripData!$B{dr}').font = GREEN
         for gi in range(NG):
-            terms = ','.join(f'MAP_StripData!{CL(3 + mi * NG + gi)}{dr}' for mi in range(NM))
-            ws.cell(row=r, column=3 + gi, value=f'=SUM({terms})').number_format = MONEY
-            for mi in range(NM):
+            # The national purchasers-price cell: Australian basic value plus the
+            # national net taxes and margins. Margin and tax RATES are measured
+            # against this, never against a state-sized denominator.
+            nat = ['MAP_StripData!%s%d' % (CL(3 + 15 * NG + gi), dr),
+                   'MAP_StripData!%s%d' % (CL(3 + 16 * NG + gi), dr)]
+            nat += ['MAP_StripData!%s%d' % (CL(3 + mi * NG + gi), dr)
+                    for mi in range(2, NM)]
+            ws.cell(row=r, column=3 + gi, value=f'=SUM({",".join(nat)})').number_format = MONEY
+            # basic (domestic + imports) share of the national cell
+            ws.cell(row=r, column=3 + NG + gi, value=(
+                f'=IFERROR((MAP_StripData!{CL(3 + 15 * NG + gi)}{dr}'
+                f'+MAP_StripData!{CL(3 + 16 * NG + gi)}{dr})/${CL(3 + gi)}{r},0)')
+            ).number_format = PCT
+            # domestic and imports: the national basic share, split by the
+            # SELECTED REGION's own domestic/import ratio. That split is the real
+            # gain from holding state Table 5 and Table 8.
+            reg_d = f'MAP_StripData!{CL(3 + 0 * NG + gi)}{dr}'
+            reg_m = f'MAP_StripData!{CL(3 + 1 * NG + gi)}{dr}'
+            ws.cell(row=r, column=RATE0 + 0 * NG + gi, value=(
+                f'=IFERROR(${CL(3 + NG + gi)}{r}*{reg_d}/({reg_d}+{reg_m}),0)')
+            ).number_format = PCT
+            ws.cell(row=r, column=RATE0 + 1 * NG + gi, value=(
+                f'=IFERROR(${CL(3 + NG + gi)}{r}*{reg_m}/({reg_d}+{reg_m}),0)')
+            ).number_format = PCT
+            # net taxes and the 12 margins: national rates
+            for mi in range(2, NM):
                 ws.cell(row=r, column=RATE0 + mi * NG + gi, value=(
                     f'=IFERROR(MAP_StripData!{CL(3 + mi * NG + gi)}{dr}/${CL(3 + gi)}{r},0)')
                 ).number_format = PCT

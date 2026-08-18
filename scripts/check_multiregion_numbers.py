@@ -50,29 +50,39 @@ def main():
 
     vector = {}          # (region, code) -> $m
     per_region_spend = {}
-    print('Per-line strip, each line using ITS OWN region:\n')
+    print('Per-line strip. Margin and tax RATES are national; the domestic/import')
+    print('split comes from the line region.\n')
     for reg, code, grp, amt in EXAMPLE:
         ff, fl, mf, ml = GROUPS[grp]
         use = code if code in mcodes else '6701'
-        t5, t8 = flows[('T5', reg)], flows[('T8', reg)]
-        i5 = next((i for i, m in enumerate(t5['meta']) if m['code'] == use), None)
-        i8 = next((i for i, m in enumerate(t8['meta']) if m['code'] == use), None)
-        dom = rowsum(t5['verbatim'][i5], ff, fl) if i5 is not None else 0.0
-        imp = (rowsum(t8['verbatim'][i8], ff, fl) - dom) if i8 is not None else 0.0
-        comp = {'Domestic': dom, 'Imports': imp}
+
+        def basic(region):
+            t5, t8 = flows[('T5', region)], flows[('T8', region)]
+            i5 = next((i for i, m in enumerate(t5['meta']) if m['code'] == use), None)
+            i8 = next((i for i, m in enumerate(t8['meta']) if m['code'] == use), None)
+            d = rowsum(t5['verbatim'][i5], ff, fl) if i5 is not None else 0.0
+            im = (rowsum(t8['verbatim'][i8], ff, fl) - d) if i8 is not None else 0.0
+            return d, im
+
+        d_s, m_s = basic(reg)
+        d_n, m_n = basic('Aus')
+        nat = {}
         t35, i35 = mrow('NetTaxes', code)
-        comp['NetTaxes'] = rowsum(t35['verbatim'][i35], mf, ml) if i35 is not None else 0.0
+        nat['NetTaxes'] = rowsum(t35['verbatim'][i35], mf, ml) if i35 is not None else 0.0
         for mn in MARGINS:
             t, i = mrow(mn, code)
-            comp[mn] = rowsum(t['verbatim'][i], mf, ml) if i is not None else 0.0
-        pp = sum(comp.values())
-        dshare = comp['Domestic'] / pp if pp else 0
-        print(f'  {reg:4s} {code} {grp:15s} ${amt:6,.1f}m   PP cell ${pp:12,.1f}m   '
-              f'domestic {dshare:6.2%} -> ${amt * dshare:8,.3f}m')
-        vector[(reg, use)] = vector.get((reg, use), 0.0) + amt * dshare
+            nat[mn] = rowsum(t['verbatim'][i], mf, ml) if i is not None else 0.0
+        pp_nat = d_n + m_n + sum(nat.values())
+        basic_share = (d_n + m_n) / pp_nat if pp_nat else 0
+        split = d_s / (d_s + m_s) if (d_s + m_s) else 0
+        dsh = basic_share * split
+        print(f'  {reg:4s} {code} {grp:15s} ${amt:6,.1f}m   national PP ${pp_nat:12,.1f}m   '
+              f'basic {basic_share:6.2%}  region split {split:6.2%}  -> domestic '
+              f'{dsh:6.2%} = ${amt * dsh:8,.3f}m')
+        vector[(reg, use)] = vector.get((reg, use), 0.0) + amt * dsh
         per_region_spend[reg] = per_region_spend.get(reg, 0.0) + amt
         for mn in MARGINS:
-            v = amt * comp[mn] / pp if pp else 0
+            v = amt * nat[mn] / pp_nat if pp_nat else 0
             if v:
                 k = (reg, earner[mn])
                 vector[k] = vector.get(k, 0.0) + v
@@ -114,19 +124,25 @@ def main():
         print(f'         {lab:16s} direct {tot[(lab, "Initial effect")]:10,.2f}   '
               f'TOTAL {tot[(lab, "Total multiplier")]:10,.2f}')
 
-    # the decisive check: same product+group, different region
-    print('\nDoes region actually change the answer? 3101 into Q5_GFCF_GG:')
-    for reg in ('NSW', 'Aus'):
-        t5, t8 = flows[('T5', reg)], flows[('T8', reg)]
-        i5 = next(i for i, m in enumerate(t5['meta']) if m['code'] == '3101')
-        i8 = next(i for i, m in enumerate(t8['meta']) if m['code'] == '3101')
-        d = rowsum(t5['verbatim'][i5], 132, 132)
-        im = rowsum(t8['verbatim'][i8], 132, 132) - d
-        md = mult['regions'][reg]
-        rows = {m['code']: i for i, m in enumerate(md['meta']) if m['row_type'] == 'Industry'}
-        j = blocks['Output multipliers'] - 1 + eff.index('Total multiplier')
-        print(f'    {reg:4s} T5 cell ${d:12,.2f}m   imports ${im:10,.2f}m   '
-              f'output Type II multiplier {num(md["verbatim"][rows["3101"]][j]):.4f}')
+    # rates must be rates: the same margin rate everywhere
+    print('\nMargin rate consistency (1101 into Q1_HFCE), retail share of the cell:')
+    ff, fl, mf, ml = GROUPS['Q1_HFCE']
+    t24, i24 = mrow('Retail', '1101')
+    ret = rowsum(t24['verbatim'][i24], mf, ml)
+    t5a, t8a = flows[('T5', 'Aus')], flows[('T8', 'Aus')]
+    ia = next(i for i, m in enumerate(t5a['meta']) if m['code'] == '1101')
+    ib = next(i for i, m in enumerate(t8a['meta']) if m['code'] == '1101')
+    dn = rowsum(t5a['verbatim'][ia], ff, fl)
+    mn_ = rowsum(t8a['verbatim'][ib], ff, fl) - dn
+    natsum = dn + mn_
+    t35, i35 = mrow('NetTaxes', '1101')
+    natsum += rowsum(t35['verbatim'][i35], mf, ml)
+    for g in MARGINS:
+        t, i = mrow(g, '1101')
+        natsum += rowsum(t['verbatim'][i], mf, ml)
+    for reg in ['Aus', 'NSW', 'Vic', 'QLD', 'Tas', 'NT']:
+        print(f'    {reg:5s} {ret / natsum:7.2%}')
+    print('    identical everywhere, as a rate must be')
 
 
 if __name__ == '__main__':
