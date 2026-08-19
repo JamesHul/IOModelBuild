@@ -50,6 +50,13 @@ Verified against Table 21 to the dollar.
 
 ## Known state of the code
 
+**The master model is `scripts/build_model_multiregion.py`** -> `output/IO_Impact_Model_MASTER.xlsx`. Region is a column on `IN_Shock`, so one run covers all nine jurisdictions. `IOMODEL_SHOCK` loads a spending file, `IOMODEL_YEARS` and `IOMODEL_LINES` size it. Everything in `output/old/` is superseded.
+
+- **Margin and tax rates are national rates, measured against the NATIONAL purchasers-price cell.** What the region contributes is the split of the basic portion between domestic and imported. Summing a national margin dollar into a state-sized denominator makes the implied rate climb as the region shrinks - 31% of a household meat dollar nationally but 77% in Tasmania - and that was a live bug in both models. `MAP_LineStrip` carries `Dom (Aus)`/`Imp (Aus)` beside `Dom (region)`/`Imp (region)` for exactly this reason.
+- **Verify the generated workbook, not the generator.** This bug was "fixed" once, confirmed against the independent checker and a static scan, and shipped unfixed: the patch never reached disk. The formula count staying identical across a change that adds columns was the missed tell. Always read the built file's headers and formulas back.
+
+### Superseded
+
 `scripts/build_model.py` is the **v0.3** generator: 22 tabs, 66,317 formulas, built entirely on the stacked RAW layer. The four defects listed against v0.2 are fixed — RAW is verbatim, the spine bridge and `n.a.` handling live in `MAP_`, and nothing is trimmed or re-spined on the way in.
 
 The chain, each tab reading only the ones above it:

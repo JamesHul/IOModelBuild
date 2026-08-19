@@ -357,7 +357,7 @@ def main():
         'code resolves to 0 and contributes nothing.')).font = NOTE
     hdr(ws, 4, ['Line', 'Region', 'Code', 'Use code', 'Group', 'Direct only',
                 'Flow first', 'Flow last', 'Marg first', 'Marg last', 'T5 row', 'T8 row']
-        + [m[:9] + ' r' for m in mcols])
+        + [m[:9] + ' r' for m in mcols] + ['Aus T5 r', 'Aus T8 r'])
     K0 = 5
     for i in range(NLINE):
         r = K0 + i
@@ -383,29 +383,48 @@ def main():
         for j, mn in enumerate(mcols, 13):
             ws.cell(row=r, column=j, value=(
                 f'=IFERROR(MATCH("{mn}|"&$C{r},{MGK},0),0)'))
+        # The AUSTRALIAN rows as well. Margins and net taxes are published only
+        # nationally, so their RATES must be measured against the national basic
+        # value. A national margin over a state-sized denominator makes the rate
+        # climb as the state shrinks - 31% of a household meat dollar nationally
+        # but 77% in Tasmania. A margin rate is a rate.
+        ws.cell(row=r, column=26, value=f'=IFERROR(MATCH("Aus|"&$D{r},{T5K},0),0)')
+        ws.cell(row=r, column=27, value=f'=IFERROR(MATCH("Aus|"&$D{r},{T8K},0),0)')
     K1 = K0 + NLINE - 1
     ws.freeze_panes = 'G5'
 
     # ======================================================== MAP_LineStrip
     ws = wb.create_sheet('MAP_LineStrip')
-    band(ws, 1, 'MAP_LineStrip - the RAW values for each shocked cell, and the shares', 40)
+    band(ws, 1, 'MAP_LineStrip - national margin and tax RATES, with the domestic/import '
+                'split taken from the line region', 44)
     ws.cell(row=2, column=1, value=(
-        'Domestic and imports come from the LINE REGION Table 5 and Table 8. Net taxes and '
-        'the 12 margins are national ABS data - the ABS publishes no state matrices - and '
-        'the margin is assumed earned in the same region as the purchase.')).font = NOTE
+        'Margins and net taxes are published nationally only, so their RATES are measured '
+        'against the NATIONAL purchasers-price cell (columns G-H plus the national margin '
+        'columns). What the line region supplies is the split of the basic-price portion '
+        'between domestic and imported - which is the real gain from holding state Table 5 '
+        'and Table 8.')).font = NOTE
+    ws.cell(row=3, column=1, value=(
+        'Doing it the naive way - a national margin dollar over a state-sized denominator - '
+        'makes the implied margin rate climb as the region shrinks: 31% of a household meat '
+        'dollar nationally against 77% in Tasmania. A margin rate is a rate.')).font = NOTE
     hdr(ws, 5, ['Line', 'Region', 'Code', 'Group'])
-    c = ws.cell(row=4, column=5, value='Component values, $m')
+    LV = 5
+    lvl = ['Dom (region)', 'Imp (region)', 'Dom (Aus)', 'Imp (Aus)'] + \
+          [m + ' (Aus)' for m in MEASURES[2:]]
+    c = ws.cell(row=4, column=LV, value='Levels $m - region basic, then NATIONAL')
     c.font = H3
     c.fill = GREYFILL
-    for mi, meas in enumerate(MEASURES):
-        h = ws.cell(row=5, column=5 + mi, value=meas)
+    for i2, nm in enumerate(lvl):
+        h = ws.cell(row=5, column=LV + i2, value=nm)
         h.font = H3
         h.fill = HDRFILL
         h.alignment = Alignment(wrap_text=True)
-    PPC = 5 + NM
-    ws.cell(row=5, column=PPC, value='PP total').font = H3
-    SH0 = PPC + 1
-    c = ws.cell(row=4, column=SH0, value='Shares')
+    PPC = LV + len(lvl)
+    ws.cell(row=5, column=PPC, value='PP national').font = H3
+    BAS = PPC + 1
+    ws.cell(row=5, column=BAS, value='Basic share (nat)').font = H3
+    SH0 = BAS + 1
+    c = ws.cell(row=4, column=SH0, value='Shares applied to this line')
     c.font = H3
     c.fill = GREYFILL
     for mi, meas in enumerate(MEASURES):
@@ -416,34 +435,49 @@ def main():
     CHKC = SH0 + NM
     ws.cell(row=5, column=CHKC, value='Check = 100%').font = H3
     S0 = 6
-    for i in range(NLINE):
-        r = S0 + i
-        kr = K0 + i
-        for j, srccol in enumerate(['A', 'B', 'C', 'E'], 1):
-            c = ws.cell(row=r, column=j, value=f'=MAP_ShockKeys!${srccol}{kr}')
+    for i2 in range(NLINE):
+        r = S0 + i2
+        kr = K0 + i2
+        for j2, srccol in enumerate(['A', 'B', 'C', 'E'], 1):
+            c = ws.cell(row=r, column=j2, value=f'=MAP_ShockKeys!${srccol}{kr}')
             c.font = GREEN
-            if j == 3:
+            if j2 == 3:
                 c.number_format = '@'
-        t5 = (f'SUM(INDEX({T5R},MAP_ShockKeys!$K{kr},MAP_ShockKeys!$G{kr}):'
-              f'INDEX({T5R},MAP_ShockKeys!$K{kr},MAP_ShockKeys!$H{kr}))')
-        t8 = (f'SUM(INDEX({T8R},MAP_ShockKeys!$L{kr},MAP_ShockKeys!$G{kr}):'
-              f'INDEX({T8R},MAP_ShockKeys!$L{kr},MAP_ShockKeys!$H{kr}))')
-        ws.cell(row=r, column=5, value=(
-            f'=IF(MAP_ShockKeys!$K{kr}=0,0,{t5})')).number_format = MONEY
-        ws.cell(row=r, column=6, value=(
-            f'=IF(OR(MAP_ShockKeys!$K{kr}=0,MAP_ShockKeys!$L{kr}=0),0,({t8})-({t5}))')
-        ).number_format = MONEY
-        for mi, meas in enumerate(MEASURES[2:], 2):
+
+        def fl(rowcol, tab):
+            return (f'IF(MAP_ShockKeys!${rowcol}{kr}=0,0,'
+                    f'SUM(INDEX({tab},MAP_ShockKeys!${rowcol}{kr},MAP_ShockKeys!$G{kr}):'
+                    f'INDEX({tab},MAP_ShockKeys!${rowcol}{kr},MAP_ShockKeys!$H{kr})))')
+
+        ws.cell(row=r, column=LV, value='=' + fl('K', T5R)).number_format = MONEY
+        ws.cell(row=r, column=LV + 1, value=(
+            f'=IF(OR(MAP_ShockKeys!$K{kr}=0,MAP_ShockKeys!$L{kr}=0),0,'
+            f'({fl("L", T8R)})-({fl("K", T5R)}))')).number_format = MONEY
+        ws.cell(row=r, column=LV + 2, value='=' + fl('Z', T5R)).number_format = MONEY
+        ws.cell(row=r, column=LV + 3, value=(
+            f'=IF(OR(MAP_ShockKeys!$Z{kr}=0,MAP_ShockKeys!$AA{kr}=0),0,'
+            f'({fl("AA", T8R)})-({fl("Z", T5R)}))')).number_format = MONEY
+        for mi, meas in enumerate(MEASURES[2:]):
             mrow = f'MAP_ShockKeys!${CL(13 + mcols.index(meas))}{kr}'
-            mg = (f'SUM(INDEX({MGR},{mrow},MAP_ShockKeys!$I{kr}):'
-                  f'INDEX({MGR},{mrow},MAP_ShockKeys!$J{kr}))')
-            ws.cell(row=r, column=5 + mi, value=(
-                f'=IF({mrow}=0,0,{mg})')).number_format = MONEY
+            ws.cell(row=r, column=LV + 4 + mi, value=(
+                f'=IF({mrow}=0,0,SUM(INDEX({MGR},{mrow},MAP_ShockKeys!$I{kr}):'
+                f'INDEX({MGR},{mrow},MAP_ShockKeys!$J{kr})))')).number_format = MONEY
+        # national purchasers-price cell = Aus basic + national tax + national margins
         ws.cell(row=r, column=PPC, value=(
-            f'=SUM({CL(5)}{r}:{CL(5 + NM - 1)}{r})')).number_format = MONEY
-        for mi in range(NM):
+            f'=SUM({CL(LV + 2)}{r}:{CL(LV + len(lvl) - 1)}{r})')).number_format = MONEY
+        ws.cell(row=r, column=BAS, value=(
+            f'=IFERROR(({CL(LV + 2)}{r}+{CL(LV + 3)}{r})/${CL(PPC)}{r},0)')).number_format = PCT
+        # domestic / imports: national basic share, split by the REGION's own ratio
+        ws.cell(row=r, column=SH0, value=(
+            f'=IFERROR(${CL(BAS)}{r}*{CL(LV)}{r}/({CL(LV)}{r}+{CL(LV + 1)}{r}),0)')
+        ).number_format = PCT
+        ws.cell(row=r, column=SH0 + 1, value=(
+            f'=IFERROR(${CL(BAS)}{r}*{CL(LV + 1)}{r}/({CL(LV)}{r}+{CL(LV + 1)}{r}),0)')
+        ).number_format = PCT
+        # net taxes and the 12 margins: NATIONAL rates
+        for mi in range(2, NM):
             ws.cell(row=r, column=SH0 + mi, value=(
-                f'=IFERROR({CL(5 + mi)}{r}/${CL(PPC)}{r},0)')).number_format = PCT
+                f'=IFERROR({CL(LV + 2 + mi)}{r}/${CL(PPC)}{r},0)')).number_format = PCT
         ws.cell(row=r, column=CHKC, value=(
             f'=IF(${CL(PPC)}{r}=0,1,SUM({CL(SH0)}{r}:{CL(SH0 + NM - 1)}{r}))')
         ).number_format = PCT
@@ -493,12 +527,17 @@ def main():
                 f'=INDEX(Lists_MarginMap!$C${mm["first"]}:$C${mm["last"]},'
                 f'MATCH($B{r},Lists_MarginMap!$B${mm["first"]}:$B${mm["last"]},0))'))
             c.number_format = '@'
+            # SUMPRODUCT over the 700 line rows, not SUMIFS over the 10,500-row
+            # exploded strip. Same answer, and it avoids ~11 million cell
+            # evaluations per recalculation once the model runs 10 years.
+            mi = MEASURES.index(mn)
             for y in range(NYR):
                 ws.cell(row=r, column=4 + y, value=(
-                    f'=SUMIFS(CALC_Strip!{CL(6 + y)}${P0}:{CL(6 + y)}${P1},'
-                    f'CALC_Strip!$B${P0}:$B${P1},$A{r},'
-                    f'CALC_Strip!$D${P0}:$D${P1},$B{r},'
-                    f'CALC_Strip!$E${P0}:$E${P1},"N")')).number_format = MONEY
+                    f'=SUMPRODUCT((MAP_LineStrip!$B${S0}:$B${S1}=$A{r})*'
+                    f'(MAP_ShockKeys!$F${K0}:$F${K1}<>"Y")*'
+                    f'IN_Shock!{CL(7 + y)}${I0}:{CL(7 + y)}${I1}*'
+                    f'MAP_LineStrip!{CL(SH0 + mi)}${S0}:{CL(SH0 + mi)}${S1})')
+                ).number_format = MONEY
             r += 1
     MG1 = r - 1
 

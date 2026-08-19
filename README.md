@@ -34,10 +34,9 @@ non-negotiable rules and domain facts, and
 │   └── supplied/                   Provider's flow tables + multipliers (upload here)
 │
 ├── build/                        Derived cache (build/sources.pkl) — gitignored
-└── output/                       Generated workbook(s)
-    ├── IO_Impact_Model_v0-3.xlsx   The model — start here
-    ├── IO_RAW_Stacked.xlsx         The stacked RAW layer on its own
-    └── IO_Impact_Model_v0-2.xlsx   The superseded v0.2 model
+└── output/
+    ├── IO_Impact_Model_MASTER.xlsx  THE model — the only one to use
+    └── old/                         superseded builds, kept for reference only
 ```
 
 ## Where to put files
@@ -71,9 +70,15 @@ python scripts/load_sources.py       # data/ ─▶ build/sources.pkl (verbatim)
 python scripts/check_sources.py      # integrity gates — do not build on a failure
 python scripts/build_raw_stacked.py  # ─▶ output/IO_RAW_Stacked.xlsx
 python scripts/verify_stacked.py     # prove it is verbatim, cell for cell
-python scripts/build_model.py        # ─▶ output/IO_Impact_Model_v0-3.xlsx
-python scripts/check_model_numbers.py  # independent second opinion on the numbers
+# The master model. IOMODEL_SHOCK loads a spending file straight into IN_Shock.
+IOMODEL_SHOCK=data/shock.xlsx IOMODEL_YEARS=10 \
+    python scripts/build_model_multiregion.py
+python scripts/check_super_shock.py  # independent second opinion on the numbers
 ```
+
+`scripts/build_model.py` (single-region v0.3) is superseded and kept only for
+reference. The master is the multi-region generator: region is a column on
+IN_Shock, so one run covers every jurisdiction and Australia.
 
 To recalculate and scan for error cells, build the reduced workbook first —
 the full one has 66,317 formulas and the engine is slow on it:
