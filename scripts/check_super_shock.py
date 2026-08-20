@@ -15,8 +15,9 @@ from pathlib import Path
 import openpyxl
 
 ROOT = Path(__file__).resolve().parent.parent
-SHOCK = Path('/root/.claude/uploads/40e8c981-0484-5536-a14d-be6baaabbb16/'
-             '6fd7af73-indicative_abs_spending_by_state.xlsx')
+import os
+SHOCK = Path(os.environ.get('IOMODEL_SHOCK',
+             ROOT / 'output' / 'Super_shock_CORRECTED_by_state.xlsx'))
 FF, FL, MF, ML = 128, 128, 119, 119          # Q1_HFCE columns
 MARGINS = ['Wholesale', 'Retail', 'RestHotelClub', 'Road', 'Rail', 'Pipeline',
            'Water', 'Air', 'PortHandling', 'MarineIns', 'Gas', 'Electricity']
