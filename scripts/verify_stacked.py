@@ -12,6 +12,7 @@ check used isinstance(x, float) and skipped values Excel had stored as int. Use
 numbers.Number and compare numerically.
 """
 import numbers
+import re
 import sys
 from pathlib import Path
 
@@ -24,7 +25,7 @@ STACKED = ROOT / 'output' / 'IO_RAW_Stacked.xlsx'
 REGIONS = ['Aus', 'NSW', 'Vic', 'QLD', 'SA', 'WA', 'Tas', 'NT', 'ACT']
 SHEET = {'Aus': 'Aus', 'NSW': 'NSW', 'Vic': 'Vic', 'QLD': 'Qld', 'SA': 'SA',
          'WA': 'WA', 'Tas': 'Tas', 'NT': 'NT', 'ACT': 'ACT'}
-NKEY = 4
+NKEY = 5   # Region, Code, RowType, SrcRow, Key
 TABS = {'RAW_T5': ('%s Table 5 FY23', 165, 141),
         'RAW_T8': ('%s Table 8 FY23', 158, 136),
         'RAW_Multipliers': ('%s multiplier summary FY23', 136, 181)}
@@ -116,6 +117,84 @@ def main():
             failures.append(f'{tab}: only {len(regs)} regions')
         if nonstr:
             failures.append(f'{tab}: {nonstr} codes not stored as text')
+
+    # ------------------------------------------------------------- margins
+    # Same round-trip for the ABS margin and tax tables, which carry five key
+    # columns (ABS_Table, Margin, Code, RowType, SrcRow) rather than four.
+    import glob
+    import os
+    MKEY = 6   # ABS_Table, Margin, Code, RowType, SrcRow, Key
+    ABS_FIRST, ABS_LAST, ABS_COLS = 4, 121, 127
+    absfiles = {}
+    for f in glob.glob(str(ROOT / 'data' / 'abs' / '*.xls*')):
+        m = re.search(r'5209055001(\d{2})', os.path.basename(f))
+        if m:
+            absfiles[str(int(m.group(1)))] = f
+    if 'RAW_Margins' in outwb.sheetnames and absfiles:
+        ws = outwb['RAW_Margins']
+        grid = [list(r) for r in ws.iter_rows(values_only=True)]
+        bands = {}
+        for i, row in enumerate(grid, 1):
+            if row and isinstance(row[0], int) and isinstance(row[4], int):
+                bands.setdefault(str(row[0]), i)
+        mbad = 0
+        for tbl, start in sorted(bands.items(), key=lambda kv: int(kv[0])):
+            if tbl not in absfiles:
+                failures.append(f'RAW_Margins/{tbl}: no source file')
+                continue
+            swb = openpyxl.load_workbook(absfiles[tbl], read_only=True, data_only=True)
+            sn = next(n for n in swb.sheetnames if n.lower().startswith('table'))
+            srows = [list(r) for r in swb[sn].iter_rows(
+                min_row=ABS_FIRST, max_row=ABS_LAST, max_col=ABS_COLS, values_only=True)]
+            swb.close()
+            for ri, srow in enumerate(srows):
+                orow = grid[start - 1 + ri] if start - 1 + ri < len(grid) else []
+                for ci, sv in enumerate(srow):
+                    ov = orow[MKEY + ci] if MKEY + ci < len(orow) else None
+                    total_cells += 1
+                    if not same(sv, ov):
+                        mbad += 1
+                        if len(failures) < 15:
+                            failures.append(
+                                f'RAW_Margins/T{tbl} srcrow{ABS_FIRST + ri} '
+                                f'col{ci + 1}: source={sv!r} stacked={ov!r}')
+        total_bad += mbad
+        print(f'  {"RAW_Margins":16s} {"OK" if not mbad else f"{mbad} MISMATCH"}')
+
+        # control totals read back out of the generated workbook
+        print('\nMargin control totals (read from the workbook, not the source)')
+        CTRL = {'Wholesale': 182778, 'Retail': 146374, 'RestHotelClub': 4790,
+                'Road': 44056, 'Rail': 7171, 'Pipeline': 2392, 'Water': 120,
+                'Air': 1151, 'PortHandling': 1057, 'MarineIns': 23, 'Gas': 3608,
+                'Electricity': 27890}
+        tot = rex_tot = 0.0
+        for row in grid:
+            if not row or not isinstance(row[0], int):
+                continue
+            if row[3] == 'Product' and isinstance(row[MKEY + 126], numbers.Number):
+                if row[0] != 35:
+                    tot += float(row[MKEY + 126])
+            if row[3] == 'ReExports' and isinstance(row[MKEY + 126], numbers.Number):
+                if row[0] != 35:
+                    rex_tot += float(row[MKEY + 126])
+        per = {}
+        for row in grid:
+            if row and isinstance(row[0], int) and row[3] == 'Product' \
+                    and isinstance(row[MKEY + 126], numbers.Number):
+                per[row[1]] = per.get(row[1], 0.0) + float(row[MKEY + 126])
+        for name, gate in CTRL.items():
+            got = per.get(name, 0.0)
+            ok = abs(got - gate) < 0.5
+            print(f'  {name:16s} {got:12,.0f}  gate {gate:9,.0f}  {"ok" if ok else "MISMATCH"}')
+            if not ok:
+                failures.append(f'margin control {name}: {got:,.0f} vs {gate:,.0f}')
+        for label, got, gate in [('TOTAL 23-34 spine', tot, 421410),
+                                 ('incl re-exports', tot + rex_tot, 422034),
+                                 ('Table 35 net taxes', per.get('NetTaxes', 0.0), 168673)]:
+            ok = abs(got - gate) < 0.5
+            print(f'  {label:16s} {got:12,.0f}  gate {gate:9,.0f}  {"ok" if ok else "MISMATCH"}')
+            if not ok:
+                failures.append(f'{label}: {got:,.0f} vs {gate:,.0f}')
 
     srcwb.close()
     outwb.close()
