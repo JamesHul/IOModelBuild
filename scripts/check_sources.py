@@ -76,10 +76,16 @@ def simple_output_multiplier(Z, x):
 # --------------------------------------------------------------------- checks
 def check_abs(src):
     abs_t = src['abs']
-    needed = ['T5', 'T8', 'T35'] + ['T' + k for k in src['margin_tables']]
+    # ABS Table 5 and Table 8 are deliberately NOT required here. The flow
+    # tables come from the provider's regionalised set, and imports are derived
+    # as supplied-T8 less supplied-T5. That is what removes the need for ABS
+    # Tables 2 and 3 as well - see CLAUDE.md and the v2 build plan.
+    needed = ['T35'] + ['T' + k for k in src['margin_tables']]
     missing = [k for k in needed if k not in abs_t]
-    report('ABS tables present', PASS if not missing else FAIL,
+    report('ABS margin and tax tables present', PASS if not missing else FAIL,
            '' if not missing else f"missing: {missing}")
+    report('ABS Table 21 control present', PASS if 'T21' in abs_t else WARN,
+           '' if 'T21' in abs_t else 'optional, but it is the independent margin control')
 
     for key, (name, ind) in src['margin_tables'].items():
         k = 'T' + key
@@ -89,6 +95,53 @@ def check_abs(src):
         n = len(t['row_index'])
         report(f"{k} {name}: spine codes found", PASS if n >= 115 else WARN,
                f"{n} four-digit codes in column {t['code_col']}")
+
+    # Margin control totals. These are the gate on a re-paste: if a new vintage
+    # lands and these move, the strip rates move with them.
+    ctrl = src.get('margin_control', {})
+    tot = rex = 0.0
+    for key, (name, _ind) in src['margin_tables'].items():
+        t = abs_t.get('T' + key)
+        if not t:
+            continue
+        spine = sum(_num(row[126]) for row, m in zip(t['verbatim'], t['meta'])
+                    if m['row_type'] == 'Product' and not np.isnan(_num(row[126])))
+        r = sum(_num(row[126]) for row, m in zip(t['verbatim'], t['meta'])
+                if m['row_type'] == 'ReExports' and not np.isnan(_num(row[126])))
+        tot += spine
+        rex += r
+        gate = ctrl.get(name)
+        if gate is not None:
+            report(f"T{key} {name}: control total", PASS if abs(spine - gate) < 0.5 else FAIL,
+                   f"{spine:,.0f} against {gate:,.0f}")
+    if tot:
+        g = src.get('margin_total_spine', 421410)
+        report('Margins 23-34 total on the spine', PASS if abs(tot - g) < 0.5 else FAIL,
+               f"{tot:,.0f} against {g:,.0f}")
+        report('Margins 23-34 incl re-exports',
+               PASS if abs(tot + rex - 422034) < 0.5 else FAIL,
+               f"{tot + rex:,.0f} against 422,034 (re-exports {rex:,.0f})")
+    t35 = abs_t.get('T35')
+    if t35:
+        n35 = sum(_num(row[126]) for row, m in zip(t35['verbatim'], t35['meta'])
+                  if m['row_type'] == 'Product' and not np.isnan(_num(row[126])))
+        g = src.get('net_tax_total_spine', 168673)
+        report('Table 35 net taxes total', PASS if abs(n35 - g) < 0.5 else FAIL,
+               f"{n35:,.0f} against {g:,.0f}")
+
+    # Table 21 is an independent source for the same number, by earning
+    # industry rather than by product. If 23-34 and 21 disagree, one of them
+    # is the wrong vintage.
+    t21 = abs_t.get('T21')
+    if t21 and tot:
+        # Table 21 columns: A code, B name, C Margin Commodity, D Non margin,
+        # E Total. The comparable number is C - column E is margin plus
+        # non-margin supply and is roughly double.
+        t21tot = next((_num(row[2]) for row, m in zip(t21['verbatim'], t21['meta'])
+                       if m['row_type'] == 'Total'), np.nan)
+        report('Table 21 agrees with Tables 23-34',
+               PASS if not np.isnan(t21tot) and abs(t21tot - (tot + rex)) < 0.5 else FAIL,
+               f"Table 21 margin commodity {t21tot:,.0f} against {tot + rex:,.0f}")
 
 
 def industry_block(d):

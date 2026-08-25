@@ -22,9 +22,11 @@ non-negotiable rules and domain facts, and
 │   ├── inspect_inputs.py           Report the shape of every file in data/
 │   ├── load_sources.py             data/ ─▶ build/sources.pkl (verbatim)
 │   ├── check_sources.py            Integrity gates on build/sources.pkl
-│   ├── build_raw_stacked.py        build/sources.pkl ─▶ stacked RAW workbook
+│   ├── build_raw_stacked.py        Stacked RAW layer (also imported by the model)
 │   ├── verify_stacked.py           Prove the stacked tabs are verbatim
-│   └── build_model.py              build/sources.pkl ─▶ output/ workbook
+│   ├── build_model.py              build/sources.pkl ─▶ the v0.3 model
+│   ├── recalc_model.py             Recalculate and scan for error cells
+│   └── check_model_numbers.py      Independent recomputation of the arithmetic
 │
 ├── data/                         Source files only — never edited (rule 1)
 │   ├── README.md                   What belongs in each subfolder
@@ -32,18 +34,22 @@ non-negotiable rules and domain facts, and
 │   └── supplied/                   Provider's flow tables + multipliers (upload here)
 │
 ├── build/                        Derived cache (build/sources.pkl) — gitignored
-└── output/                       Generated workbook(s)
-    └── IO_Impact_Model_v0-2.xlsx   The current built model
+└── output/
+    ├── IO_Impact_Model_MASTER.xlsx  THE model — the only one to use
+    └── old/                         superseded builds, kept for reference only
 ```
 
 ## Where to put files
 
 You upload source files into **`data/`**, and nothing else:
 
-- **`data/abs/`** — the ABS Input-Output tables (Table 5, Table 8, Tables 23–34
-  margins, Table 35 net taxes, and optionally the Industry and Product Concordance
-  workbook). Keep the ABS filenames (`520905500105.xlsx`, …) or rename to
-  `Table 5.xlsx` style so the loader can identify them.
+- **`data/abs/`** — the ABS margin and tax tables: **Tables 23–34** (margins),
+  **Table 35** (net taxes) and **Table 21** (the control total). Keep the ABS
+  filenames (`520905500123.xlsx`, …) or rename to `Table 23.xlsx` style so the
+  loader can identify them; a trailing ` (1)` from a repeat download is fine.
+  ABS Table 5 and Table 8 are **not** needed — the flow tables come from the
+  provider's regionalised set, and imports are derived as its T8 less its T5.
+  Optionally also the Industry and Product Concordance workbook.
 - **`data/supplied/`** — your provider's Table 5 / Table 8 and the multiplier set,
   for all nine regions.
 
@@ -64,8 +70,26 @@ python scripts/load_sources.py       # data/ ─▶ build/sources.pkl (verbatim)
 python scripts/check_sources.py      # integrity gates — do not build on a failure
 python scripts/build_raw_stacked.py  # ─▶ output/IO_RAW_Stacked.xlsx
 python scripts/verify_stacked.py     # prove it is verbatim, cell for cell
-python scripts/build_model.py        # build/sources.pkl ─▶ output/ workbook
+# The master model. IOMODEL_SHOCK loads a spending file straight into IN_Shock.
+IOMODEL_SHOCK=data/shock.xlsx IOMODEL_YEARS=10 \
+    python scripts/build_model_multiregion.py
+python scripts/check_super_shock.py  # independent second opinion on the numbers
 ```
+
+`scripts/build_model.py` (single-region v0.3) is superseded and kept only for
+reference. The master is the multi-region generator: region is a column on
+IN_Shock, so one run covers every jurisdiction and Australia.
+
+To recalculate and scan for error cells, build the reduced workbook first —
+the full one has 66,317 formulas and the engine is slow on it:
+
+```bash
+IOMODEL_SUBSET=1 python scripts/build_model.py   # ─▶ build/IO_Model_subset.xlsx
+python scripts/recalc_model.py build/IO_Model_subset.xlsx
+```
+
+LibreOffice cannot load any xlsx in this container (it fails on a three-cell
+file), so `soffice --convert-to` is not usable for recalculation here.
 
 ### The stacked RAW layer
 
@@ -77,14 +101,21 @@ region switch avoid the banned `INDIRECT` and a nine-deep nested `IF`. `RowType`
 is what makes the output denominator a `SUMIF` over primary-input rows rather than
 a hardcoded row range — Table 5 and Table 8 do not agree on where those rows sit.
 
+`RAW_Margins` stacks ABS Tables 23-34 and Table 35 the same way, keyed by
+`ABS_Table` and `Margin` instead of Region — the ABS publishes margin and tax
+matrices nationally only, so there is no region dimension to key on. The
+margin-to-earning-industry assignment is a transformation rather than identity,
+so it lives in `Lists_MarginMap`, joined on `ABS_Table`. `RAW_T21_Control` holds
+the independent control total.
+
 The `INDEX` tab of the generated workbook lists the exact row band for every
-region, and the paste procedure for a new vintage.
+block, and the paste procedure for a new vintage.
 
 `load_sources.py` reads `data/abs/` and `data/supplied/` and writes a verbatim
 cache to `build/sources.pkl`; the RAW tabs are written from that cache unchanged.
-The `load_supplied_flows()` and `load_supplied_multipliers()` loaders are stubs
-until the real provider files land — run `inspect_inputs.py` first and adapt them
-to the actual file layout, as the docstrings describe.
+It is the only file that knows the layout of the input spreadsheets, so when a
+new drop changes shape, that is the single place to fix. Run `inspect_inputs.py`
+first to see what actually arrived.
 
 After every build, recalculate the workbook and scan for error cells before
 declaring success — a build that has not been recalculated is not verified.
