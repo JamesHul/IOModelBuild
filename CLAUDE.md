@@ -55,6 +55,65 @@ Verified against Table 21 to the dollar.
 - **Margin and tax rates are national rates, measured against the NATIONAL purchasers-price cell.** What the region contributes is the split of the basic portion between domestic and imported. Summing a national margin dollar into a state-sized denominator makes the implied rate climb as the region shrinks - 31% of a household meat dollar nationally but 77% in Tasmania - and that was a live bug in both models. `MAP_LineStrip` carries `Dom (Aus)`/`Imp (Aus)` beside `Dom (region)`/`Imp (region)` for exactly this reason.
 - **Verify the generated workbook, not the generator.** This bug was "fixed" once, confirmed against the independent checker and a static scan, and shipped unfixed: the patch never reached disk. The formula count staying identical across a change that adds columns was the missed tell. Always read the built file's headers and formulas back.
 
+### The industry-split add-on
+
+**`scripts/build_industry_split.py`** -> `output/IO_Industry_Split_Model.xlsx`, a
+**separate** workbook for the question "which industries does the impact land in".
+It does not replace the master and does not re-derive anything the master does.
+
+- **Its one input is the master's `CALC_Vector`**, pasted as values into
+  `IN_DirectVector`. That tab is the post-margin-allocation shock: one row per
+  shock line for the domestic content, plus one row per (region, margin type)
+  against the industry that earns the margin. Column C of `CALC_Vector` is
+  `MAP_ShockKeys!$D`, the **bridged** 114-code, so a straight paste is already on
+  the right spine; the bridge is repeated on `IN_DirectVector` anyway.
+- **Source is `data/supplied/Piggy IO tables and multipliers_V2 industry splitout
+  tables.xlsx`**, 71 sheets, `<region> <model> <measure> FY23`. Same grid as the
+  main supplied file: r10 column codes, r11 region name in col B, r13 first data
+  row, rows 13-136 the 114 codes plus 10 dummies. Rows are `FROM INDUSTRY` (where
+  the impact lands), columns C-DV are `FOR USE` (where the dollar was spent).
+  r139 `Sum`, r141-147 the seven effect rows. Rows 1-8 and 148-274 are empty.
+- **A column sums to the Simple multiplier.** Verified against the multiplier
+  summary in the main supplied file: 114/114 codes, all nine regions, both
+  measures, max deviation 4.9e-15. That is what makes the add-on legitimate -
+  summing the industry split reproduces the number the master already reports.
+  `scripts/check_industry_split.py` re-runs it on every data drop.
+- **Direct is the initial effect and it sits on the diagonal.** `Direct(i) =
+  Shock(i) x InitialEffect(i)`; everything else in column i is indirect. Checked:
+  the diagonal is never below the initial effect in any region or measure (the
+  minimum margin is exactly 0, at `6701`), and no coefficient anywhere is
+  negative, so indirect never goes negative.
+- **`va@mp` is value added at MARKET prices** - the only split-out family
+  supplied. The master's headline is **basic** prices. Mean gap +0.010 on Aus,
+  range -0.013 to +0.050 by industry. They will not tie and they are not supposed
+  to. Ask the provider for a basic-prices split-out family.
+- **Open only** - Simple multiplier, no consumption-induced effect. Compare
+  against the master's Direct + Indirect, never TOTAL.
+- **`Aus open income FY23` does not exist** in the file; the other eight regions
+  have it. Not needed for the two measures built today.
+- **`CALC_ShockByIndustry` and `CALC_IndustryImpact` carry no autofilter on
+  purpose.** `CALC_ShockWide` and `OUT_ByIndustry` link to their rows by position,
+  so a sort would silently re-point every link. Filter on the `OUT_` tabs.
+- **A whole row of a range is `INDEX(rng,r,1):INDEX(rng,r,{n})`, not
+  `INDEX(rng,r,0)`.** The array form is valid Excel, but the `formulas` engine
+  evaluates it as the first cell alone - it would have made the core multiply
+  silently wrong AND unverifiable, which is the worst combination. The
+  `INDEX:INDEX` range form behaves identically in Excel and in the engine.
+  Conversely the engine cannot compile `(condition array)*(INDEX:INDEX column)`
+  at all; where a column had to vary by year the year was already fixed by the
+  generating loop, so those three sites emit a literal column and a plain
+  `SUMIFS`. Probe a formula shape against the engine on a three-cell file before
+  generating 20,000 of it.
+- **openpyxl serialises floats with `%.16g`**, dropping the seventeenth
+  significant digit, so a verbatim round-trip of RAW is exact only to ~5e-16
+  relative. `verify_stacked.py` already allowed 1e-9 for this;
+  `check_industry_split.py` does the same and prints the worst deviation so a
+  real change cannot hide behind the tolerance.
+- Summary industries are **ANZSIC 2006 divisions A-S, nineteen of them**, all
+  represented on the 114-code spine - there is no eighteen-division ANZSIC
+  grouping. The map is a visible table on `Lists`; merge two rows there and every
+  `OUT_` tab follows.
+
 ### Superseded
 
 `scripts/build_model.py` is the **v0.3** generator: 22 tabs, 66,317 formulas, built entirely on the stacked RAW layer. The four defects listed against v0.2 are fixed — RAW is verbatim, the spine bridge and `n.a.` handling live in `MAP_`, and nothing is trimmed or re-spined on the way in.
@@ -120,6 +179,11 @@ LibreOffice **cannot load any xlsx in this container** — it fails on a three-c
 
 ### Questions outstanding with the provider
 
+- **A basic-prices industry split-out family.** The split-out drop carries
+  `va@mp` only. The model's headline GVA is at basic prices, so the industry
+  detail cannot currently be presented as a decomposition of the headline.
+- **`Aus open income FY23` is missing** from the industry split-out file. Every
+  other region has it.
 - **`Aus Table 5` cell A1 reads "Overrides are ON."** No other sheet carries it. Unknown what it overrides.
 - **1701 Petroleum and Coal Product Manufacturing has a state multiplier above national** in QLD (+0.121), SA (+0.047) and WA (+0.102). Two further trivial cases in NSW (0801 +0.0009, 1001 +0.0127). Five of 912 comparisons; everything else obeys the rule.
 - **`NT Table 5` carries extra rows 157-165** (`P1_Labour`, `P2_GOS` … `P6_Imports`) that no other sheet has. Preserved verbatim; look like working notes.
@@ -133,3 +197,6 @@ LibreOffice **cannot load any xlsx in this container** — it fails on a three-c
 4. Fix the exports column: Table 5 and Table 8 treat re-exports differently, so `T8-T5` gives a zero import share for Q7.
 5. ~~Confirm whether the supplied `Employed` block is persons or FTE.~~ **FTE**, per the state Table 5 column heading. Price year still to confirm, and Australia has no employment column at all.
 6. Ask the provider for a `6700` row.
+7. Extend the industry-split add-on to `open output`, `open income` and the four
+   `closed` families. They are already in the source file on an identical grid;
+   add them to `MEASURES` in `scripts/load_splitout.py` and rebuild.

@@ -26,7 +26,12 @@ non-negotiable rules and domain facts, and
 │   ├── verify_stacked.py           Prove the stacked tabs are verbatim
 │   ├── build_model.py              build/sources.pkl ─▶ the v0.3 model
 │   ├── recalc_model.py             Recalculate and scan for error cells
-│   └── check_model_numbers.py      Independent recomputation of the arithmetic
+│   ├── check_model_numbers.py      Independent recomputation of the arithmetic
+│   │
+│   ├── load_splitout.py            industry split-out tables ─▶ build/splitout.pkl
+│   ├── build_industry_split.py     splitout.pkl ─▶ the industry-split add-on
+│   ├── recalc_industry_split.py    Recalculate the add-on, scan for error cells
+│   └── check_industry_split.py     Independent check of the add-on
 │
 ├── data/                         Source files only — never edited (rule 1)
 │   ├── README.md                   What belongs in each subfolder
@@ -35,8 +40,9 @@ non-negotiable rules and domain facts, and
 │
 ├── build/                        Derived cache (build/sources.pkl) — gitignored
 └── output/
-    ├── IO_Impact_Model_MASTER.xlsx  THE model — the only one to use
-    └── old/                         superseded builds, kept for reference only
+    ├── IO_Impact_Model_MASTER.xlsx    THE model — the only one to use
+    ├── IO_Industry_Split_Model.xlsx   Add-on: which industries the impact lands in
+    └── old/                           superseded builds, kept for reference only
 ```
 
 ## Where to put files
@@ -51,7 +57,8 @@ You upload source files into **`data/`**, and nothing else:
   provider's regionalised set, and imports are derived as its T8 less its T5.
   Optionally also the Industry and Product Concordance workbook.
 - **`data/supplied/`** — your provider's Table 5 / Table 8 and the multiplier set,
-  for all nine regions.
+  for all nine regions, plus the **industry split-out tables** if you want the
+  industry-split add-on (`… industry splitout tables.xlsx`).
 
 The full checklist of what is still needed, what is already loaded, and where each
 item comes from is the `Files_needed` sheet of
@@ -90,6 +97,58 @@ python scripts/recalc_model.py build/IO_Model_subset.xlsx
 
 LibreOffice cannot load any xlsx in this container (it fails on a three-cell
 file), so `soffice --convert-to` is not usable for recalculation here.
+
+## The industry-split add-on
+
+A **separate** workbook, for when the question is *which industries does the
+impact land in*. It does not replace the master and does not re-derive anything
+the master already does.
+
+```bash
+python scripts/load_splitout.py          # ─▶ build/splitout.pkl (verbatim)
+python scripts/build_industry_split.py   # ─▶ output/IO_Industry_Split_Model.xlsx
+python scripts/check_industry_split.py   # independent second opinion + round-trip
+IOSPLIT_SUBSET=1 python scripts/build_industry_split.py   # small enough to recalc
+python scripts/recalc_industry_split.py
+```
+
+Its one input is the master model's **`CALC_Vector`** — the direct domestic shock
+*after* the margin split, one row per shock line plus one row per (region, margin
+type) against the industry that earns the margin. Recalculate the master, copy
+`CALC_Vector A6:M<end>`, paste-special **values** into `IN_DirectVector`.
+
+The chain: `IN_DirectVector` → `CALC_ShockByIndustry` (one row per region and
+industry) → `CALC_ShockWide` (a layout change so the multiply is a plain
+`SUMPRODUCT`) → `CALC_IndustryImpact` → `OUT_ByIndustry` / `OUT_ByDivision` /
+`OUT_Matrix`. `RAW_Split_VAmp` and `RAW_Split_Employed` hold the supplied
+matrices verbatim.
+
+For region *r*, year *y* and receiving industry *i*:
+
+```
+Total(i)    = Σ over j of Shock(r, j, y) × M_r[i][j]
+Direct(i)   = Shock(r, i, y) × InitialEffect_r[i]
+Indirect(i) = Total(i) − Direct(i)
+```
+
+Each column of a split-out matrix sums, down its 124 rows, to that region's
+**Simple multiplier** for the same measure — verified against the main supplied
+file, 114/114 codes in all nine regions, to the last bit. `QA_Reconcile`
+re-derives both totals straight off the multiplier rows of the same RAW block, so
+"does it tie to the master" is a number in the workbook.
+
+Two things to know before using the output:
+
+- **Value added is at MARKET prices.** That is the only split-out family the
+  provider supplies. The master model's headline value added is at **basic**
+  prices. They differ by roughly +0.01 per dollar on average nationally, signed
+  both ways by industry. Label the output accordingly.
+- **Open model only** — Simple multiplier, initial plus production-induced. No
+  induced effect, so compare against the master's Direct + Indirect, never TOTAL.
+
+`open output`, `open income` and the four `closed` families sit on an identical
+grid in the same source file. Add them to `MEASURES` in `scripts/load_splitout.py`
+and rebuild; nothing else changes.
 
 ### The stacked RAW layer
 
