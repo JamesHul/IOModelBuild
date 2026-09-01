@@ -184,7 +184,9 @@ def division_of(code):
         return ('', '')
     if code.startswith('99'):
         return DUMMY_DIV
-    return DIV_OF_PREFIX.get(code[:2], ('?', 'UNMAPPED - fix Lists'))
+    # Sentinel deliberately a word: '?' is a single-character wildcard in a
+    # COUNTIF criterion, so a gate looking for it would match every division.
+    return DIV_OF_PREFIX.get(code[:2], ('UNMAPPED', 'UNMAPPED - add the prefix to DIVISIONS'))
 
 
 def main():
@@ -513,8 +515,10 @@ def main():
         c = ws.cell(row=r, column=IVKEY, value=(
             f'=IF(OR($B{r}="",${CL(IVK)}{r}=""),"",$B{r}&"|"&${CL(IVK)}{r})'))
         c.number_format = '@'
+        # 0, not "", on an unused row: in Excel ""<>0 is TRUE, so returning text
+        # here would make every empty row count as a row with spend.
         ws.cell(row=r, column=IVT, value=(
-            f'=IF($B{r}="","",SUM($D{r}:${CL(3 + nyr)}{r}))')).number_format = MONEY
+            f'=IF($B{r}="",0,SUM($D{r}:${CL(3 + nyr)}{r}))')).number_format = MONEY
     if EXAMPLE:
         ws.cell(row=4, column=1, value=(
             'EXAMPLE DATA IS LOADED BELOW so the chain is alive on open. It is NOT a '
@@ -948,10 +952,10 @@ def main():
     QG0 = 8
     gates = [
         ('Both split-out families loaded for every region',
-         f'=IF(AND(SUMPRODUCT(--({raw_tab[measures[0][0]]}!$D$6:$D${raw_last[measures[0][0]]}'
-         f'="Spine"))={nreg * sum(1 for c, _ in order if not c.startswith("99"))},'
-         f'SUMPRODUCT(--({raw_tab[measures[-1][0]]}!$D$6:$D${raw_last[measures[-1][0]]}'
-         f'="Spine"))={nreg * sum(1 for c, _ in order if not c.startswith("99"))}),'
+         f'=IF(AND(COUNTIF({raw_tab[measures[0][0]]}!$D$6:$D${raw_last[measures[0][0]]},'
+         f'"Spine")={nreg * sum(1 for c, _ in order if not c.startswith("99"))},'
+         f'COUNTIF({raw_tab[measures[-1][0]]}!$D$6:$D${raw_last[measures[-1][0]]},'
+         f'"Spine")={nreg * sum(1 for c, _ in order if not c.startswith("99"))}),'
          f'"PASS","FAIL")',
          'A region silently missing from the stack, which would quietly zero it'),
         ('Every RAW row MAP landed on carries the code it was looked up by',
@@ -967,12 +971,14 @@ def main():
          f'${CL(CWD + NC + 1)}${CW1})))<0.000001,"PASS","FAIL")',
          'A row linked to the wrong region or year'),
         ('Every pasted line has a known region',
-         f'=IF(SUMPRODUCT(--(IN_DirectVector!${CL(IVT)}${IV0}:${CL(IVT)}${IV1}<>0),'
-         f'--(IN_DirectVector!${CL(IVR)}${IV0}:${CL(IVR)}${IV1}<>"OK"))=0,"PASS","FAIL")',
-         'A line that resolves to nothing and is dropped without a trace'),
+         f'=IF(COUNTIF(IN_DirectVector!${CL(IVR)}${IV0}:${CL(IVR)}${IV1},'
+         f'"UNKNOWN REGION")=0,"PASS","FAIL")',
+         'A line that resolves to nothing and is dropped without a trace. Counts '
+         'the check column directly, so a bad region shows up even in a year the '
+         'line happens to be zero'),
         ('Every pasted code is on the 114-code spine',
-         f'=IF(SUMPRODUCT(--(IN_DirectVector!${CL(IVT)}${IV0}:${CL(IVT)}${IV1}<>0),'
-         f'--(IN_DirectVector!${CL(IVC)}${IV0}:${CL(IVC)}${IV1}<>"OK"))=0,"PASS","FAIL")',
+         f'=IF(COUNTIF(IN_DirectVector!${CL(IVC)}${IV0}:${CL(IVC)}${IV1},'
+         f'"NOT ON THE 114-CODE SPINE")=0,"PASS","FAIL")',
          'A code the split-out tables have no column for'),
         ('Nothing shocked against a dummy row',
          f'=IF(SUMPRODUCT((LEFT(CALC_ShockByIndustry!$B${CS0}:$B${CS1},2)="99")*'
@@ -998,7 +1004,7 @@ def main():
          'never exceeds the diagonal in any region or measure, so a negative here '
          'means the subtraction has gone wrong'),
         ('Every division on the spine is in the Lists division table',
-         f'=IF(COUNTIF(Lists_Spine!$D${SP0}:$D${SP1},"?")=0,"PASS","FAIL")',
+         f'=IF(COUNTIF(Lists_Spine!$D${SP0}:$D${SP1},"UNMAPPED")=0,"PASS","FAIL")',
          'An IOIG code with no summary industry, which would vanish from OUT_Matrix'),
         ('OUT_ByDivision totals back to OUT_ByIndustry',
          f'=IF(ROUND(SUMIFS(OUT_ByDivision!${CL(ODT + 2)}${OD0}:${CL(ODT + 2)}${OD1},'
@@ -1036,8 +1042,7 @@ def main():
          '"Open / Simple multiplier = initial + production-induced. No induced effect."',
          'Closed families are in the source file but not built yet'),
         ('Rows with spend on the paste',
-         f'=SUMPRODUCT(--(IN_DirectVector!${CL(IVT)}${IV0}:${CL(IVT)}${IV1}<>0))',
-         ''),
+         f'=COUNTIF(IN_DirectVector!${CL(IVT)}${IV0}:${CL(IVT)}${IV1},"<>0")', ''),
         ('Total pasted shock, all years, $m',
          f'=SUM(IN_DirectVector!$D${IV0}:${CL(3 + nyr)}${IV1})', ''),
     ]
