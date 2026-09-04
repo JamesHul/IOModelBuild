@@ -17,3 +17,6 @@ Thumbs.db
 
 # Stray browser downloads (a file literally named "download")
 /download
+
+# docx build helper
+node_modules/
