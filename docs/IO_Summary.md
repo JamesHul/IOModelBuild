@@ -46,14 +46,15 @@ direct and production-induced effects; Type II adds the consumption-induced effe
 Type 1A, 1B, 2A and 2B forms and report the three layers separately, so results can be presented
 on whichever basis the client's audience expects.
 
-**What it is not.** An input–output model assumes that industries use inputs in fixed proportions,
-that prices and wages do not change, and that the labour, capital and materials required are
-available without being drawn away from other uses. It has no time dimension, no capacity limits
-and no financing constraint. These assumptions are what make it fast, transparent and highly
-detailed by industry—and they are also why its results describe the scale of activity associated
-with an entity rather than the net gain to the economy from it. The ABS puts it plainly: input–
-output multipliers assume no supply constraints, fixed prices and fixed input ratios, and are
-likely to significantly overstate impacts. We quote that caveat rather than paraphrase it.
+**What it is not.** An input–output model assumes that industries use inputs in fixed
+proportions, that prices and wages do not change, and that the labour, capital and materials
+required are available without being drawn away from other uses. It has no time dimension, no
+capacity limits and no financing constraint. These assumptions are what make it fast, transparent
+and highly detailed by industry—and they are also why its results describe the scale of activity
+associated with an entity rather than the net gain to the economy from it. The ABS puts it
+plainly: input–output multipliers assume no supply constraints, fixed prices and fixed input
+ratios, and are likely to significantly overstate impacts. We quote that caveat rather than
+paraphrase it.
 
 ---
 
@@ -64,11 +65,12 @@ likely to significantly overstate impacts. We quote that caveat rather than para
 | | Our input–output model |
 |---|---|
 | What it is | A generated, fully auditable Excel model that converts a client's spending profile at purchasers' prices into direct, flow-on and total impacts |
-| Geography | Australia and all eight states and territories. Every line of expenditure carries its own region, so a study spanning jurisdictions is modelled in one run. Sub-state and local-area tables can be built where a study needs one |
+| Geography | Australia, all eight states and territories, and sub-state regions built for the study. Every line of expenditure carries its own region, so a study spanning jurisdictions is modelled in one run |
 | Industries | 114 industries on the ABS IOIG(2022) spine, reported individually or grouped to the 19 ANZSIC divisions. The ABS spine carries 115; ownership of dwellings is held as a single industry rather than split between actual and imputed rent |
 | Measures | Output; wages and salaries; value added at basic prices; gross operating surplus and mixed income; employment in full-time equivalents |
 | Effect layers | Direct (initial), production-induced and consumption-induced, reported separately and as a total. Production-induced splits into first-round and industrial-support effects |
 | Multiplier types | Type 1A, 1B, 2A and 2B |
+| Trade | Interstate and overseas trade flows are estimated when the regional tables are built, so activity retained in the client's region can be separated from activity flowing to the rest of Australia and from imports |
 | Price basis | Spending is entered at purchasers' prices and converted to domestic basic prices: twelve margin types and net taxes on products are stripped and reallocated separately |
 | Vintage | Flow tables and multipliers 2022-23; ABS margin and tax matrices 2023-24 |
 | Time | A spending profile of any number of years, with each year reported separately. The economy itself does not respond over time |
@@ -114,7 +116,8 @@ For every line of expenditure we:
   generates demand for retail trade and for transport as well as for the manufacturer.
 - **Split what remains between domestic and imported supply**, using the ratio for that product in
   the region where it is bought. Imported content is excluded, because the production it supports
-  happens overseas.
+  happens overseas. Within the domestic share, the regional tables carry how much is sourced inside
+  the region and how much from the rest of Australia.
 
 The rates are taken from the ABS supply and use tables and reconciled to the ABS published control
 totals before use. They also depend on *who* is buying, not only what: nationally, around
@@ -145,7 +148,7 @@ resources are scarce, prices respond, financing matters, or the answer changes o
 | Substitution | None—input proportions are fixed | Firms and households substitute as relative prices change |
 | Time | Expenditure can be phased year by year and reported that way, but the economy does not respond over time—nothing accumulates and nothing lags | Year by year, with investment, debt and population accumulating |
 | Financing | Not represented | Government budgets, savings, borrowing and ownership are tracked |
-| Geography | Australia and the eight states and territories, plus sub-state regions where built | 153 regions, routinely split to sub-state and local areas |
+| Geography | Australia, every state and territory, and sub-state regions built for the study | 153 regions, routinely split to sub-state and local areas |
 | Industry detail | Very fine—114 industries, grouped to 19 ANZSIC divisions for reporting | Coarser, up to 76 industries, set by the study aggregation |
 | Effort | Days | Weeks |
 | Typical use | Economic footprint, contribution and supply-chain studies | Policy change, large projects, net benefit, distributional and dynamic questions |
@@ -218,40 +221,46 @@ proposal; it is what makes them defensible when a reviewer or a competing consul
 
 Applying published national multipliers to a regional question overstates the regional result. A
 region buys far more of its inputs from outside its own borders than the nation does, so much of
-the flow-on activity occurs elsewhere—and a national multiplier cannot show where. It is also a
-long time since the ABS published multipliers: the last national set was for 1998-99, and
-the ABS does not publish state or territory input–output tables at all. Working from regionalised
-tables of a current vintage is what allows the results below.
+the flow-on activity occurs elsewhere—and a national multiplier cannot show where. There is also
+no current published set to apply: the ABS last published input–output multipliers for 1998-99,
+and it does not publish state or territory input–output tables at all. Building the tables and
+deriving the multipliers ourselves is what allows everything below.
 
-- **Current, regionalised tables, independently reconciled.** We work from regionalised tables and
-  multipliers for Australia and all eight states and territories, benchmarked to ABS data, on a
-  2022-23 vintage rather than the vintage of the last published ABS multiplier set. We do not take
-  them on trust: the output multipliers are re-derived from the underlying flow tables and
-  compared, and on the current vintage they match for all 114 industries in all nine jurisdictions.
-  We record the provenance and vintage of every input.
-- **Any region, including below state level.** Tables can be estimated for smaller regions within
-  states, so a client's region is modelled directly rather than inferred from a state average.
-- **National and state results from one run, with the leakage visible.** Every line of expenditure
-  carries its own region, so a study spanning several jurisdictions is modelled in a single pass,
-  each line resolved against the tables of the state in which the spending occurs. The same
-  expenditure can also be run against the national tables. Reporting both is how the leakage is
-  made explicit: the national result is larger than the sum of the state results, and the
-  difference is flow-on activity that leaves each state and lands elsewhere in Australia. State
-  results are not additive to a national total, and we label them so they are never summed.
-- **Flow-on effects allocated to industries.** We hold the industry-by-industry matrices behind the
-  multipliers, not just the headline coefficients, so flow-on activity is reported as a genuine
-  breakdown—which industries the supply-chain dollars land in—for all 114 industries or grouped to
-  the 19 ANZSIC divisions. The check that makes this legitimate is that the industry split sums
-  back to the same multiplier the headline result uses; that reconciliation is re-run on every data
-  drop and currently holds for every industry in all nine jurisdictions.
-- **The full effect decomposition.** Because we hold the components rather than a single headline
-  number, results can be presented as direct, first-round, industrial-support and
-  consumption-induced effects, on a Type I or Type II basis, for any of the five measures—without
-  re-running the study when an audience wants a different cut.
-- **An auditable model, with gates that block a bad run.** The workbook is generated by script and
-  never hand-edited, so every result can be traced to the code and the source data that produced
-  it. Source data is held verbatim and proven cell-for-cell against the original files; every
-  number downstream of it is a visible formula rather than a pasted value. A set of automated
+- **Tables built and multipliers derived in house.** We construct input–output tables benchmarked
+  to ABS data and calculate the multipliers from them, rather than applying published coefficients
+  to a question they were not built for. The industry structure reflects the economy being
+  analysed, on a current vintage rather than the vintage of the last ABS release. Because the
+  tables are ours, they can be reconciled independently rather than taken on trust: the output
+  multipliers are re-derived from the underlying flow tables and compared, and on the current
+  vintage they agree for all 114 industries in all nine jurisdictions.
+- **Every state and territory, and smaller regions.** Multipliers are calculated for Australia and
+  for each state and territory, and can be built for sub-state geographies—an LGA, a catchment, a
+  project area—so a client's region is modelled directly rather than inferred from a state average.
+- **Interstate trade accounted for explicitly.** Regionalising a table means estimating how much of
+  each input a region buys within its own borders, how much from the rest of Australia and how much
+  from overseas. We hold those trade flows, so the interstate dimension can be reported rather than
+  assumed: the impact on the client's region, the impact on other states, and the impact on
+  Australia as a whole, with the share of the benefit retained locally separated from the share
+  that flows interstate and the share that leaks overseas. This is also what makes a national total
+  defensible. Simply adding up single-region state results understates the national impact, because
+  each region's multipliers treat as leakage the activity that in fact lands in another state;
+  estimating the flows is what closes that gap without double counting.
+- **Flow-on effects allocated to industries.** Because we calculate the multipliers, we hold the
+  industry-by-industry components behind them and not just the headline coefficients.
+  Production-induced and consumption-induced effects can therefore be allocated across industries,
+  giving a genuine industry breakdown of the flow-on activity—for all 114 industries or grouped to
+  the 19 ANZSIC divisions—rather than a single headline multiplier. The check that keeps it honest
+  is that the industry split sums back to the same multiplier the headline result uses; that
+  reconciliation is re-run on every data drop and currently holds for every industry in all nine
+  jurisdictions.
+- **The full effect decomposition.** Holding the components rather than a single number means
+  results can be presented as direct, first-round, industrial-support and consumption-induced
+  effects, on a Type I or Type II basis, for any of the five measures—without re-running the study
+  when an audience wants a different cut.
+- **An auditable model, with gates that block a bad run.** The impact workbook is generated by
+  script and never hand-edited, so every result can be traced to the code and the source data that
+  produced it. Source data is held verbatim and proven cell-for-cell against the original files;
+  every number downstream of it is a visible formula rather than a pasted value. A set of automated
   checks tests the things that go wrong silently—expenditure landing on a product that does not
   exist in the region's table, margins lost or double counted between steps, shares that fail to
   sum to one—and reports a failure rather than a plausible-looking number.
@@ -266,9 +275,11 @@ Stating the limits is part of the product, and each of the following is generate
 rather than remembered at drafting time.
 
 - **These are gross activity figures, not net benefit.** Repeated wherever a total is presented.
-- **State results do not sum to a national result.** Tracing the interstate flows themselves,
-  industry by industry, requires a multi-regional model; where a client needs that, we scope it as
-  such.
+- **Which regional basis a table is on.** Results computed on a single region's own multipliers
+  are not additive to a national total—each region treats as leakage what lands in another state.
+  Where a study needs a national figure alongside the regional ones, the interstate flows are
+  estimated so the two reconcile. Every table states which basis it is on, so the two are never
+  mixed.
 - **Margin and tax rates are national.** The ABS publishes no state margin or tax matrices, so a
   margin is assumed to be earned in the region where the purchase is made. This will overstate
   local wholesale and retail activity where goods are distributed from another state.
@@ -312,9 +323,10 @@ can be provided in the following layers:
 - **Industry results (supplementary spreadsheet).** The full breakdown by industry, including the
   allocation of flow-on effects across industries rather than a single aggregate, at 114-industry
   detail or grouped to the 19 ANZSIC divisions.
-- **Regional components (where relevant).** Results for each region in which the client spends,
-  and for Australia as a whole, showing how much of the flow-on activity is retained in the
-  client's region and how much leaves it.
+- **Regional and interstate components (where relevant).** Results for each region in which the
+  client spends, for other states, and for Australia as a whole—showing how much of the flow-on
+  activity is retained in the client's region, how much flows to the rest of Australia, and how
+  much leaks overseas.
 - **The assumptions and caveats.** Issued with the results, in the form a reviewer will ask for.
 
 ---
